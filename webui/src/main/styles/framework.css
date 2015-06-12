@@ -1,0 +1,75 @@
+/**
+ * 	Control sidebar's size and position
+ */
+@media (min-width: 480px) {
+	.sidebar-left {
+		width: 240px;
+	}
+	.sidebar-right {
+		width: 240px;
+	}
+	.sidebar-left-in .app {
+		transform: translate3d(240px, 0px, 0px);
+	}
+	.sidebar-right-in .app {
+		transform: translate3d(-240px, 0px, 0px);
+	}
+}
+@media (min-width: 992px) {
+	.sidebar-left {
+		width: 320px;
+	}
+	.sidebar-right {
+		width: 320px;
+	}
+	.has-sidebar-left .app, .sidebar-left-in .app {
+		margin-left: 320px;
+	}
+	.sidebar-right-in .app {
+		margin-right: 320px;
+	}
+}
+.navbar {
+	background-color:rgb(85,85,85);
+	color:#ffffff;
+}
+.sidebar-left {
+	border-right-style:groove;
+	border-color:#008000;
+	border-width:10px;
+}
+.app-content {
+	
+	
+}
+/**
+ * 	for page trasition slide effect
+ */
+.slide-animate.ng-enter, .slide-animate.ng-leave {
+	-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.25s;
+	-moz-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.25s;
+	-o-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.25s;
+	transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.25s;
+	display: block;
+	width: 100%;
+	position: absolute;
+}
+
+.slide-animate.ng-enter {
+	left: 100%;
+}
+.slide-animate.ng-enter.ng-enter-active {
+	left: 0;
+}
+.slide-animate.ng-leave.ng-leave-active {
+	left: -100%;
+}
+.slide-animate.ng-leave {
+	display: none;
+}
+/**
+ * 	Overall font
+ */
+body {
+	font-family: Tahoma, Arial, Helvetica, "Microsoft YaHei New", "Microsoft Yahei", "微软雅黑", 宋体, SimSun, STXihei, "华文细黑", sans-serif;
+}

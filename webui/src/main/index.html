@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html >
+	<head>
+		<title>我的财务</title>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- build:css styles/vendor.css -->
+		<!-- bower:css -->
+		<link rel="stylesheet" href="../../bower_components/mobile-angular-ui/dist/css/mobile-angular-ui-hover.css" />
+		<link rel="stylesheet" href="../../bower_components/mobile-angular-ui/dist/css/mobile-angular-ui-base.css" />
+		<link rel="stylesheet" href="../../bower_components/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.css" />
+		<link rel="stylesheet" href="../../bower_components/jquery-mobile-bower/css/jquery.mobile-1.4.5.css" />
+		<!-- endbower -->
+		<!-- endbuild -->
+		<!-- build:css styles/app.css -->
+		<link rel="stylesheet" href="styles/framework.css">
+		<link rel="stylesheet" href="styles/components.css">
+		<!-- endbuild -->
+
+	</head>
+	<body data-ng-app="myFinance">
+		<!-- Sidebars -->
+		<div class="sidebar sidebar-left">
+			<div class="scrollable">
+				<h1 class="scrollable-header app-name">菜单</h1>
+				<div class="scrollable-content">
+					<div class="list-group" ui-turn-off='uiSidebarLeft'>
+						<a class="list-group-item ui-corner-all ui-btn-icon-right ui-icon-carat-r" href="#/" id="bar-home">我的首页 </a>
+						<a class="list-group-item ui-corner-all ui-btn-icon-right ui-icon-carat-r" href="#/manage-records" id="bar-add-record">账单管理</a>
+						<a class="list-group-item ui-corner-all ui-btn-icon-right ui-icon-carat-r" href="#/manage-accounts" id="bar-account-details">账户管理</a>
+						<a class="list-group-item ui-corner-all ui-btn-icon-right ui-icon-carat-r" href="#/manage-reports">我的财务报表</a>
+					</div>
+				</div>
+			</div>
+		</div><!--
+		
+				<div class="sidebar sidebar-right">
+					
+				</div>-->
+		
+
+		<div class="app">
+			<div class="navbar navbar-app navbar-absolute-top">
+				<!-- Top Navbar -->
+				<div class="navbar-brand navbar-brand-center">
+					我的财务管家
+				</div>
+				<div class="btn-group pull-left">
+					<div class="btn sidebar-toggle" ui-toggle="uiSidebarLeft">
+						<div class="ui-btn ui-corner-all ui-btn-icon-notext ui-btn-inline ui-icon-bars">
+						菜单</div>
+					</div>
+				</div>
+			</div>
+			<div class="navbar navbar-app navbar-absolute-bottom">
+				<!-- Bottom Navbar -->
+			</div>
+
+			<!-- App body -->
+
+			<div class='app-body'>
+				<div class='app-content'>
+					<div class="slide-animate" ng-view></div>
+				</div>
+			</div>
+		</div><!-- ~ .app -->
+
+		<!-- Modals and Overlays -->
+		<div ui-yield-to="modals"></div>
+		<!-- build:js scripts/vendor.js -->
+		<!-- bower:js -->
+		<script src="../../bower_components/jquery/jquery.js"></script>
+		<script src="../../bower_components/angular/angular.js"></script>
+		<script src="../../bower_components/mobile-angular-ui/dist/js/mobile-angular-ui.min.js"></script>
+		<script src="../../bower_components/angular-route/angular-route.js"></script>
+		<script src="../../bower_components/angular-animate/angular-animate.js"></script>
+		<!-- endbower -->
+		<!-- endbuild -->
+		<!-- build:js scripts/scripts.js -->
+		<script src="scripts/app.js"></script>
+		<script src="scripts/controllers/homeCtrl.js"></script>
+		<script src="scripts/controllers/addRecordCtrl.js"></script>
+		<!-- endbuild -->
+
+	</body>
+</html>
