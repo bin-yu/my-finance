@@ -1,21 +1,35 @@
 /**
  * 	Control sidebar's size and position
  */
-@media (min-width: 480px) {
+@media only screen and (max-width: 480px) {
 	.sidebar-left {
-		width: 240px;
+		width: 160px;
 	}
 	.sidebar-right {
-		width: 240px;
+		width: 160px;
 	}
 	.sidebar-left-in .app {
-		transform: translate3d(240px, 0px, 0px);
+		transform: translate3d(160px, 0px, 0px);
 	}
 	.sidebar-right-in .app {
-		transform: translate3d(-240px, 0px, 0px);
+		transform: translate3d(-160px, 0px, 0px);
 	}
 }
-@media (min-width: 992px) {
+@media only screen and (min-width: 480px) {
+	.sidebar-left {
+		width: 200px;
+	}
+	.sidebar-right {
+		width: 200px;
+	}
+	.sidebar-left-in .app {
+		transform: translate3d(200px, 0px, 0px);
+	}
+	.sidebar-right-in .app {
+		transform: translate3d(-200px, 0px, 0px);
+	}
+}
+@media only screen and  (min-width: 992px) {
 	.sidebar-left {
 		width: 320px;
 	}
