@@ -3,44 +3,44 @@
  */
 @media only screen and (max-width: 480px) {
 	.sidebar-left {
-		width: 160px;
+		width: 50%;
 	}
 	.sidebar-right {
-		width: 160px;
+		width: 50%;
 	}
 	.sidebar-left-in .app {
-		transform: translate3d(160px, 0px, 0px);
+		transform: translate3d(50%, 0px, 0px);
 	}
 	.sidebar-right-in .app {
-		transform: translate3d(-160px, 0px, 0px);
+		transform: translate3d(-50%, 0px, 0px);
 	}
 }
 @media only screen and (min-width: 480px) {
 	.sidebar-left {
-		width: 200px;
+		width: 35%;
 	}
 	.sidebar-right {
-		width: 200px;
+		width: 35%;
 	}
 	.sidebar-left-in .app {
-		transform: translate3d(200px, 0px, 0px);
+		transform: translate3d(35%, 0px, 0px);
 	}
 	.sidebar-right-in .app {
-		transform: translate3d(-200px, 0px, 0px);
+		transform: translate3d(-35%, 0px, 0px);
 	}
 }
 @media only screen and  (min-width: 992px) {
 	.sidebar-left {
-		width: 320px;
+		width: 20%;
 	}
 	.sidebar-right {
-		width: 320px;
+		width: 20%;
 	}
 	.has-sidebar-left .app, .sidebar-left-in .app {
-		margin-left: 320px;
+		margin-left: 20%;
 	}
 	.sidebar-right-in .app {
-		margin-right: 320px;
+		margin-right: 20%;
 	}
 }
 .navbar {
