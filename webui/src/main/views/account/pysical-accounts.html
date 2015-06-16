@@ -1,0 +1,24 @@
+<table class="account-table">
+	<thead>
+		<tr>
+			<th>账户名</th>
+			<th>账户余额（元）</th>
+			<th>描述</th>
+			<th>操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="account in physicalAccountList">
+			<td>{{account.name}}</td>
+			<td>{{account.amount}}</td>
+			<td>{{account.description}}</td>
+			<td><a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-edit ui-btn-icon-notext ui-btn-inline">修改</a><a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline">删除</a></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td><a href="#" class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline">添加</a></td>
+		</tr>
+	</tbody>
+</table>

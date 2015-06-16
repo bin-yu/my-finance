@@ -11,15 +11,15 @@
 // PACKAGE/IMPORTS --------------------------------------------------
 package org.binyu.myfinance.backend;
 
-import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * TODO: Update with a detailed description of the interface/class.
@@ -48,7 +48,7 @@ public class TestControllerTest extends AbstractIntegrationTest
         .andExpect(content().contentType("application/json;charset=UTF-8"))
         .andReturn();
     String resp = result.getResponse().getContentAsString();
-    assertEquals("hello," + name, resp);
+    Assert.assertEquals("hello," + name, resp);
   }
   // PROTECTED METHODS ----------------------------------------------
 

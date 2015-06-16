@@ -85,7 +85,7 @@ public class RootConfiguration
       private void allowAjaxCros(HttpServletResponse response)
       {
         response.setHeader("Access-Control-Allow-Origin",
-            "http://localhost:9000");
+            "http://localhost:9001");
         response.setHeader("Access-Control-Expose-Headers",
             "X-CSRF-TOKEN");
         response.setHeader("Access-Control-Allow-Methods",

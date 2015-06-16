@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
@@ -22,19 +20,19 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
+import org.testng.annotations.BeforeClass;
 
 /**
  * @author Administrator
  *
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = { RootConfiguration.class })
 @ActiveProfiles({ "web-integration" })
 @WebIntegrationTest(randomPort = true)
-public abstract class AbstractWebIntegrationTest
+public abstract class AbstractWebIntegrationTest extends AbstractTransactionalTestNGSpringContextTests
 {
 
   protected static final String DEFAULT_CSRF_HEADER_NAME = "X-CSRF-TOKEN";

@@ -1,50 +1,25 @@
-CREATE TABLE `DOMAIN` (
-        `NAME` varchar(64) NOT NULL,
-        `PROVIDER_FACTORY` varchar(64) NOT NULL,
-        `PARAMETERS` varchar(1024),
-        PRIMARY KEY (`NAME`)
-    );
-    
-CREATE TABLE `user` (
-`id`  int(11) NOT NULL AUTO_INCREMENT ,
-`name`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-`domain`  varchar(64),
-`password` varchar(255),
-`create_time` DATETIME NOT NULL,
-`update_time` DATETIME,
-`deleted` TINYINT(1) DEFAULT '0',
-PRIMARY KEY (`id`),
-FOREIGN KEY (`DOMAIN`) REFERENCES DOMAIN (`NAME`)
-);
-CREATE UNIQUE INDEX `USER_IDX_NAME` ON `user`(`domain`,`name`);
-
-CREATE TABLE `role` (
-`id`  int(11) NOT NULL AUTO_INCREMENT ,
-`name`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CREATE TABLE `physical_accounts` (
+`id`  bigint NOT NULL AUTO_INCREMENT ,
+`name`  varchar(255) NOT NULL ,
+`description`  varchar(255) NULL,
+`amount` bigint default 0,
 PRIMARY KEY (`id`)
 );
-CREATE UNIQUE INDEX `ROLE_IDX_NAME` ON `role`(`name`);
+CREATE UNIQUE INDEX `physical_accounts_idx_name` ON `physical_accounts`(`name`);
 
-CREATE TABLE `user_role` (
-`user_id`  int(11) NOT NULL,
-`role_id`  int(11) NOT NULL,
-PRIMARY KEY (`user_id`,`role_id`),
-FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
-FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE
-);
-
-CREATE TABLE `resource` (
-`id`  int(11) NOT NULL AUTO_INCREMENT ,
-`name`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+CREATE TABLE `virtual_accounts` (
+`id`  bigint NOT NULL AUTO_INCREMENT ,
+`name`  varchar(255) NOT NULL ,
+`description`  varchar(255) NULL,
 PRIMARY KEY (`id`)
 );
-CREATE UNIQUE INDEX `RESOURCE_IDX_NAME` ON `resource`(`name`);
+CREATE UNIQUE INDEX `virtual_accounts_idx_name` ON `virtual_accounts`(`name`);
 
-CREATE TABLE `role_permission` (
-`role_id`  int(11) NOT NULL,
-`resource_id`  int(11) NOT NULL,
-`permission`  int(11) NOT NULL,
-PRIMARY KEY (`role_id`,`resource_id`),
-FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE,
-FOREIGN KEY (`resource_id`) REFERENCES `resource` (`id`) ON DELETE CASCADE
+CREATE TABLE `virtual_accounts_in_physical_accounts` (
+`physical_account_id`  bigint NOT NULL,
+`virtual_account_id`  bigint NOT NULL,
+`amount` bigint default 0,
+PRIMARY KEY (`physical_account_id`,`virtual_account_id`),
+FOREIGN KEY (`physical_account_id`) REFERENCES physical_accounts (`id`),
+FOREIGN KEY (`virtual_account_id`) REFERENCES virtual_accounts (`id`)
 );

@@ -24,7 +24,7 @@ function($routeProvider) {
 		controller : 'AddRecordCtrl'
 	}).when('/pysical-accounts', {
 		templateUrl : 'views/account/pysical-accounts.html',
-		controller : 'AddRecordCtrl'
+		controller : 'PhysicalAccountCtrl'
 	}).when('/virtual-accounts', {
 		templateUrl : 'views/account/virtual-accounts.html',
 		controller : 'AddRecordCtrl'
@@ -44,3 +44,12 @@ function($routeProvider) {
 		redirectTo : '/'
 	});
 }]); 
+myApp.constant('HostConfig', {
+	isCors : true,
+	protocol : 'http',
+	host : 'localhost',
+	port : 8080,
+	contextPath : 'my-finance-backend'
+}).constant('RestResources', {
+	physicalAccounts : '/physical_accounts',
+});

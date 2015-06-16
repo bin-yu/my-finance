@@ -1,5 +1,5 @@
 /********************************************************************
- * File Name:    TestControllerSecurityTest.java
+ * File Name:    PhysicalAccountMapper.java
  *
  * Date Created: Jun 15, 2015
  *
@@ -9,19 +9,13 @@
  *******************************************************************/
 
 // PACKAGE/IMPORTS --------------------------------------------------
-package org.binyu.myfinance.backend;
+package org.binyu.myfinance.backend.daos;
 
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import java.util.List;
 
-/**
- * TODO: Update with a detailed description of the interface/class.
- *
- */
-public class TestControllerSecurityTest extends AbstractWebIntegrationTest
+import org.binyu.myfinance.backend.dtos.PhysicalAccount;
+
+public interface PhysicalAccountMapper
 {
 
   // CONSTANTS ------------------------------------------------------
@@ -33,15 +27,12 @@ public class TestControllerSecurityTest extends AbstractWebIntegrationTest
   // CONSTRUCTORS ---------------------------------------------------
 
   // PUBLIC METHODS -------------------------------------------------
-  @Test
-  public void testSayHello() throws Exception
-  {
-    String name = "Marry";
-    ResponseEntity<String> resp = restTemplate.exchange(
-        constructFullURL("/hello/" + name), HttpMethod.GET, null,
-        String.class);
-    Assert.assertEquals(resp.getStatusCode(), HttpStatus.OK);
-  }
+
+  List<PhysicalAccount> getPhysicalAccountList();
+
+  void addPhysicalAccount(PhysicalAccount accountToAdd);
+
+  PhysicalAccount getPhysicalAccountById(long id);
   // PROTECTED METHODS ----------------------------------------------
 
   // PRIVATE METHODS ------------------------------------------------

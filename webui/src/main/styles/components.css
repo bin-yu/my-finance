@@ -62,4 +62,14 @@
 	color:#C12E2A;
 }
 
+.account-table {
+	width: 100%;
+	table-layout: fixed;
+	color:#FFFFFF;
+}
+.account-table thead {
+	border-bottom: 1px solid white;
+	line-height: 40px;
+}
+
 

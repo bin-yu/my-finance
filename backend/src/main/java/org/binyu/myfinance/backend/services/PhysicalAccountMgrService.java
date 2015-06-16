@@ -1,5 +1,5 @@
 /********************************************************************
- * File Name:    TestControllerSecurityTest.java
+ * File Name:    PhysicalAccountMgrService.java
  *
  * Date Created: Jun 15, 2015
  *
@@ -9,19 +9,22 @@
  *******************************************************************/
 
 // PACKAGE/IMPORTS --------------------------------------------------
-package org.binyu.myfinance.backend;
+package org.binyu.myfinance.backend.services;
 
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import java.util.List;
+
+import org.binyu.myfinance.backend.daos.PhysicalAccountMapper;
+import org.binyu.myfinance.backend.dtos.PhysicalAccount;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * TODO: Update with a detailed description of the interface/class.
  *
  */
-public class TestControllerSecurityTest extends AbstractWebIntegrationTest
+@Service
+public class PhysicalAccountMgrService
 {
 
   // CONSTANTS ------------------------------------------------------
@@ -29,20 +32,34 @@ public class TestControllerSecurityTest extends AbstractWebIntegrationTest
   // CLASS VARIABLES ------------------------------------------------
 
   // INSTANCE VARIABLES ---------------------------------------------
+  @Autowired
+  private PhysicalAccountMapper repo;
 
   // CONSTRUCTORS ---------------------------------------------------
 
   // PUBLIC METHODS -------------------------------------------------
-  @Test
-  public void testSayHello() throws Exception
+
+  public List<PhysicalAccount> getPhysicalAccountList()
   {
-    String name = "Marry";
-    ResponseEntity<String> resp = restTemplate.exchange(
-        constructFullURL("/hello/" + name), HttpMethod.GET, null,
-        String.class);
-    Assert.assertEquals(resp.getStatusCode(), HttpStatus.OK);
+    return repo.getPhysicalAccountList();
   }
+
   // PROTECTED METHODS ----------------------------------------------
+
+  @Transactional(rollbackFor = Throwable.class)
+  public PhysicalAccount addPhysicalAccount(PhysicalAccount accountToAdd)
+  {
+    try
+    {
+      repo.addPhysicalAccount(accountToAdd);
+      return accountToAdd;
+    }
+    catch (Throwable e)
+    {
+      e.printStackTrace();
+      throw e;
+    }
+  }
 
   // PRIVATE METHODS ------------------------------------------------
 
