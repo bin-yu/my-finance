@@ -4,3 +4,12 @@ bower_components
 /webui/backup-jqm
 /webui/.tmp
 /webui/.externalToolBuilders
+.classpath
+.gitignore
+.project
+.settings
+/backend/catalina.home_IS_UNDEFINED
+/backend/test-output
+.springBeans
+/webui/grunt-init-gruntfile
+/webui/test-results.xml
