@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.binyu.myfinance.backend.daos.AccountAuditMapper">
+	<insert id="addRecord" useGeneratedKeys="true" keyProperty="id">
+		insert
+		into
+		account_audits(date,type,from_physical_account_id,from_virtual_account_id,to_physical_account_id,to_virtual_account_id,amount,description)
+		values
+		(#{date},#{iType},#{fromPhysicalAccountId},#{fromVirtualAccountId},#{toPhysicalAccountId},#{toVirtualAccountId},#{amount},#{description})
+	</insert>
+	<select id="getRecord" resultMap="AccountTransactionMapper">
+		select *
+		from account_audits
+		where id=#{id}
+	</select>
+	<select id="searchRecords" resultMap="AccountTransactionMapper">
+		select *
+		from account_audits
+		where 1=1
+		<if test="filter.fromDate != null">
+			AND date >= #{filter.fromDate}
+		</if>
+		<if test="filter.toDate != null">
+			AND date &lt; #{filter.toDate}
+		</if>
+		order by date 
+		<if test="filter.sortOrder == 'DESC'">
+			DESC
+		</if>
+	</select>
+	<resultMap id="AccountTransactionMapper"
+		type="org.binyu.myfinance.backend.dtos.AccountTransaction">
+		<id property="id" column="id" />
+		<result property="date" column="date" />
+		<result property="iType" column="type" />
+		<result property="fromPhysicalAccountId" column="from_physical_account_id" />
+		<result property="fromVirtualAccountId" column="from_virtual_account_id" />
+		<result property="toPhysicalAccountId" column="to_physical_account_id" />
+		<result property="toVirtualAccountId" column="to_virtual_account_id" />
+		<result property="amount" column="amount" />
+		<result property="description" column="description" />
+	</resultMap>
+</mapper>

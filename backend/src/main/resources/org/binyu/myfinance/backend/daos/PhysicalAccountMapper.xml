@@ -6,14 +6,14 @@
 	<select id="getPhysicalAccountList" resultMap="physicalAccountMap">
 		SELECT p.id,p.name,p.description,sum(vp.amount) as amount
 		FROM physical_accounts as p
-		left outer join virtual_accounts_in_physical_accounts as vp on vp.physical_account_id=p.id
+		left outer join account_stores as vp on vp.physical_account_id=p.id
 		group by p.id
 		order by p.id
 	</select>
 	<select id="getPhysicalAccountById" resultMap="physicalAccountMap">
 		SELECT p.id,p.name,p.description,sum(vp.amount) as amount
 		FROM physical_accounts as p
-		left outer join virtual_accounts_in_physical_accounts as vp on vp.physical_account_id=p.id
+		left outer join account_stores as vp on vp.physical_account_id=p.id
 		WHERE p.id = #{id}
 		group by p.id
 	</select>

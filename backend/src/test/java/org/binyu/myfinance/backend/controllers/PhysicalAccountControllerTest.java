@@ -19,22 +19,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import java.security.SecureRandom;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.binyu.myfinance.backend.AbstractIntegrationTest;
 import org.binyu.myfinance.backend.daos.PhysicalAccountMapper;
 import org.binyu.myfinance.backend.dtos.PhysicalAccount;
+import org.binyu.myfinance.backend.utils.AccountTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.testng.Assert;
@@ -51,7 +44,6 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
   // CLASS VARIABLES ------------------------------------------------
 
   // INSTANCE VARIABLES ---------------------------------------------
-  private SecureRandom random = new SecureRandom();
   @Autowired
   JdbcTemplate jdbcTemplate;
   @Autowired
@@ -63,7 +55,7 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
   @Test(dataProvider = "testGetPhysicalAccountListData")
   public void testGetPhysicalAccountList(int accountNum) throws Exception
   {
-    List<PhysicalAccount> allAccounts = insertRandomPhysicalAccounts(accountNum);
+    List<PhysicalAccount> allAccounts = AccountTestUtils.insertRandomPhysicalAccounts(jdbcTemplate, accountNum);
     MvcResult result = this.mockMvc
         .perform(get("/physical_accounts").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
         .andDo(MockMvcResultHandlers.print())
@@ -101,7 +93,7 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
   public void testAddPhysicalAccountWithInvalidInput(String accountName) throws Exception
   {
     // prepare one dummy acount for dup test
-    insertPhysicalAccount("dummy", "dummy");
+    AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "dummy", "dummy");
 
     PhysicalAccount actToAdd = new PhysicalAccount(accountName, "desc");
     this.mockMvc
@@ -119,7 +111,7 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
   public void testUpdatePhysicalAccountWithValidInput() throws Exception
   {
     // prepare one dummy acount for update test
-    PhysicalAccount actToUpdate = insertPhysicalAccount("dummy", "dummy");
+    PhysicalAccount actToUpdate = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "dummy", "dummy");
 
     String newName = "changedName";
     actToUpdate.setName(newName);
@@ -146,7 +138,7 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
   public void testUpdatePhysicalAccountWithPathIdWrong() throws Exception
   {
     // prepare one dummy acount for update test
-    PhysicalAccount actOriginal = insertPhysicalAccount("dummy", "dummy");
+    PhysicalAccount actOriginal = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "dummy", "dummy");
 
     PhysicalAccount actToUpdate = actOriginal.clone();
     String newName = "changedName";
@@ -172,7 +164,7 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
   public void testUpdatePhysicalAccountWithBodyIdWrong() throws Exception
   {
     // prepare one dummy acount for update test
-    PhysicalAccount actOriginal = insertPhysicalAccount("dummy", "dummy");
+    PhysicalAccount actOriginal = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "dummy", "dummy");
 
     PhysicalAccount actToUpdate = actOriginal.clone();
     // set a wrong id
@@ -200,7 +192,7 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
   public void testUpdatePhysicalAccountWithNullName() throws Exception
   {
     // prepare one dummy acount for update test
-    PhysicalAccount actOriginal = insertPhysicalAccount("dummy", "dummy");
+    PhysicalAccount actOriginal = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "dummy", "dummy");
 
     PhysicalAccount actToUpdate = actOriginal.clone();
     // set null name
@@ -244,51 +236,6 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
       // use empty name
       { null },
     };
-  }
-
-  protected List<PhysicalAccount> insertRandomPhysicalAccounts(int accountNum) throws SQLException
-  {
-    List<PhysicalAccount> allAccounts = new ArrayList<PhysicalAccount>(accountNum);
-    for (int i = 0; i < accountNum; i++)
-    {
-      String name = "RandomAcct-" + random.nextInt();
-      String desc = "desc-" + random.nextInt();
-      PhysicalAccount account = insertPhysicalAccount(name, desc);
-      allAccounts.add(account);
-    }
-    Collections.sort(allAccounts, new Comparator<PhysicalAccount>()
-    {
-
-      @Override
-      public int compare(PhysicalAccount act1, PhysicalAccount act2)
-      {
-        return Long.valueOf(act1.getId()).compareTo(Long.valueOf(act2.getId()));
-      }
-
-    });
-    return allAccounts;
-  }
-
-  protected PhysicalAccount insertPhysicalAccount(String name, String desc) throws SQLException
-  {
-    jdbcTemplate.update("insert into physical_accounts(name,description) values (?,?)", new Object[] { name, desc },
-        new int[] { Types.CHAR, Types.CHAR });
-    PhysicalAccount account = jdbcTemplate.queryForObject("select * from physical_accounts where name = ?", new Object[] { name },
-        new RowMapper<PhysicalAccount>()
-        {
-
-          @Override
-          public PhysicalAccount mapRow(ResultSet rs, int rowNum) throws SQLException
-          {
-            PhysicalAccount account = new PhysicalAccount();
-            account.setId(rs.getLong("id"));
-            account.setName(rs.getString("name"));
-            account.setDescription(rs.getString("description"));
-            return account;
-          }
-
-        });
-    return account;
   }
 
   // ACCESSOR METHODS -----------------------------------------------

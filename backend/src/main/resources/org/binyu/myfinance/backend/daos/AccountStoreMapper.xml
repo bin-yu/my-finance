@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.binyu.myfinance.backend.daos.AccountStoreMapper">
+	<select id="getStore" resultMap="AccountStoreMap">
+		select *
+		from account_stores
+		where physical_account_id=#{physicalAccountId} and virtual_account_id=#{virtualAccountId}
+	</select>
+	<insert id="addStore">
+		insert
+		into account_stores(physical_account_id,virtual_account_id,amount)
+		values (#{physicalAccountId},#{virtualAccountId},#{amount})
+	</insert>
+	<update id="updateStore">
+		update
+		account_stores
+		set amount=#{amount}
+		where physical_account_id=#{physicalAccountId} and virtual_account_id=#{virtualAccountId}
+	</update>
+	
+	<resultMap id="AccountStoreMap" type="org.binyu.myfinance.backend.dtos.AccountStore">
+		<id property="physicalAccountId" column="physical_account_id" />
+		<id property="virtualAccountId" column="virtual_account_id" />
+		<result property="amount" column="amount" />
+	</resultMap>
+</mapper>
