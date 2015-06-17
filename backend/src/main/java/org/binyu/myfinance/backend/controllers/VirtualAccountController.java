@@ -1,5 +1,5 @@
 /********************************************************************
- * File Name:    PhysicalAccountController.java
+ * File Name:    VirtualAccountController.java
  *
  * Date Created: Jun 15, 2015
  *
@@ -13,9 +13,9 @@ package org.binyu.myfinance.backend.controllers;
 
 import java.util.List;
 
-import org.binyu.myfinance.backend.dtos.PhysicalAccount;
+import org.binyu.myfinance.backend.dtos.VirtualAccount;
 import org.binyu.myfinance.backend.exceptions.InvalidInputException;
-import org.binyu.myfinance.backend.services.PhysicalAccountMgrService;
+import org.binyu.myfinance.backend.services.VirtualAccountMgrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,44 +30,44 @@ import org.springframework.web.bind.annotation.RestController;
  *
  */
 @RestController
-@RequestMapping("/physical_accounts")
-public class PhysicalAccountController
+@RequestMapping("/virtual_accounts")
+public class VirtualAccountController
 {
   // CONSTANTS ------------------------------------------------------
 
-  private static final Logger LOG = LoggerFactory.getLogger(PhysicalAccountController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(VirtualAccountController.class);
   // CLASS VARIABLES ------------------------------------------------
 
   // INSTANCE VARIABLES ---------------------------------------------
   @Autowired
-  private PhysicalAccountMgrService service;
+  private VirtualAccountMgrService service;
 
   // CONSTRUCTORS ---------------------------------------------------
 
   // PUBLIC METHODS -------------------------------------------------
 
   @RequestMapping(method = RequestMethod.GET)
-  public List<PhysicalAccount> getPhysicalAccountList()
+  public List<VirtualAccount> getVirtualAccountList()
   {
-    return service.getPhysicalAccountList();
+    return service.getVirtualAccountList();
   }
 
   @RequestMapping(method = RequestMethod.POST)
-  public PhysicalAccount addPhysicalAccount(@RequestBody PhysicalAccount accountToAdd)
+  public VirtualAccount addVirtualAccount(@RequestBody VirtualAccount accountToAdd)
   {
-    PhysicalAccount finalAccount = service.addPhysicalAccount(accountToAdd);
+    VirtualAccount finalAccount = service.addVirtualAccount(accountToAdd);
     return finalAccount;
   }
 
   @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-  public void updatePhysicalAccount(@PathVariable long id, @RequestBody PhysicalAccount accountToUpdate)
+  public void updateVirtualAccount(@PathVariable long id, @RequestBody VirtualAccount accountToUpdate)
       throws InvalidInputException
   {
     if (id != accountToUpdate.getId())
     {
       throw new InvalidInputException("The given account information is not for this id");
     }
-    service.updatePhysicalAccount(accountToUpdate);
+    service.updateVirtualAccount(accountToUpdate);
   }
   // PROTECTED METHODS ----------------------------------------------
 

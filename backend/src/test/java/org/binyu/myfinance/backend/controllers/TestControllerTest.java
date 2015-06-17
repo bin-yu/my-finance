@@ -9,12 +9,13 @@
  *******************************************************************/
 
 // PACKAGE/IMPORTS --------------------------------------------------
-package org.binyu.myfinance.backend;
+package org.binyu.myfinance.backend.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.binyu.myfinance.backend.AbstractIntegrationTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;

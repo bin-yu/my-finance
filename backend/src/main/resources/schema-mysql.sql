@@ -2,7 +2,6 @@ CREATE TABLE `physical_accounts` (
 `id`  bigint NOT NULL AUTO_INCREMENT ,
 `name`  varchar(255) NOT NULL ,
 `description`  varchar(255) NULL,
-`amount` bigint default 0,
 PRIMARY KEY (`id`)
 );
 CREATE UNIQUE INDEX `physical_accounts_idx_name` ON `physical_accounts`(`name`);

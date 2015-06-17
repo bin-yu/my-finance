@@ -15,7 +15,7 @@ package org.binyu.myfinance.backend.dtos;
  * TODO: Update with a detailed description of the interface/class.
  *
  */
-public class PhysicalAccount implements Cloneable
+public class VirtualAccount implements Cloneable
 {
 
   // CONSTANTS ------------------------------------------------------
@@ -30,7 +30,7 @@ public class PhysicalAccount implements Cloneable
 
   // CONSTRUCTORS ---------------------------------------------------
 
-  public PhysicalAccount()
+  public VirtualAccount()
   {
     // TODO Auto-generated constructor stub
   }
@@ -38,9 +38,9 @@ public class PhysicalAccount implements Cloneable
   // PUBLIC METHODS -------------------------------------------------
 
   @Override
-  public PhysicalAccount clone() throws CloneNotSupportedException
+  public VirtualAccount clone() throws CloneNotSupportedException
   {
-    return (PhysicalAccount) super.clone();
+    return (VirtualAccount) super.clone();
   }
 
   @Override
@@ -64,7 +64,7 @@ public class PhysicalAccount implements Cloneable
       return false;
     if (getClass() != obj.getClass())
       return false;
-    PhysicalAccount other = (PhysicalAccount) obj;
+    VirtualAccount other = (VirtualAccount) obj;
     if (amount != other.amount)
       return false;
     if (description == null)
@@ -92,7 +92,7 @@ public class PhysicalAccount implements Cloneable
 
   // ACCESSOR METHODS -----------------------------------------------
 
-  public PhysicalAccount(String name, String description)
+  public VirtualAccount(String name, String description)
   {
     super();
     this.name = name;

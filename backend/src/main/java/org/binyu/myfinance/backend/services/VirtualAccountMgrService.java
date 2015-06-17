@@ -1,5 +1,5 @@
 /********************************************************************
- * File Name:    PhysicalAccountMgrService.java
+ * File Name:    VirtualAccountMgrService.java
  *
  * Date Created: Jun 15, 2015
  *
@@ -13,8 +13,8 @@ package org.binyu.myfinance.backend.services;
 
 import java.util.List;
 
-import org.binyu.myfinance.backend.daos.PhysicalAccountMapper;
-import org.binyu.myfinance.backend.dtos.PhysicalAccount;
+import org.binyu.myfinance.backend.daos.VirtualAccountMapper;
+import org.binyu.myfinance.backend.dtos.VirtualAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  */
 @Service
-public class PhysicalAccountMgrService
+public class VirtualAccountMgrService
 {
 
   // CONSTANTS ------------------------------------------------------
@@ -33,25 +33,25 @@ public class PhysicalAccountMgrService
 
   // INSTANCE VARIABLES ---------------------------------------------
   @Autowired
-  private PhysicalAccountMapper repo;
+  private VirtualAccountMapper repo;
 
   // CONSTRUCTORS ---------------------------------------------------
 
   // PUBLIC METHODS -------------------------------------------------
 
-  public List<PhysicalAccount> getPhysicalAccountList()
+  public List<VirtualAccount> getVirtualAccountList()
   {
-    return repo.getPhysicalAccountList();
+    return repo.getVirtualAccountList();
   }
 
   // PROTECTED METHODS ----------------------------------------------
 
   @Transactional(rollbackFor = Throwable.class)
-  public PhysicalAccount addPhysicalAccount(PhysicalAccount accountToAdd)
+  public VirtualAccount addVirtualAccount(VirtualAccount accountToAdd)
   {
     try
     {
-      repo.addPhysicalAccount(accountToAdd);
+      repo.addVirtualAccount(accountToAdd);
       return accountToAdd;
     }
     catch (Throwable e)
@@ -61,9 +61,9 @@ public class PhysicalAccountMgrService
     }
   }
 
-  public void updatePhysicalAccount(PhysicalAccount accountToUpdate)
+  public void updateVirtualAccount(VirtualAccount accountToUpdate)
   {
-    repo.updatePhysicalAccount(accountToUpdate);
+    repo.updateVirtualAccount(accountToUpdate);
   }
 
   // PRIVATE METHODS ------------------------------------------------

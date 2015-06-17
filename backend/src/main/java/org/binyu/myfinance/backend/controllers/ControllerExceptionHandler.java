@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import org.binyu.myfinance.backend.exceptions.InvalidInputException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,19 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler
   @ExceptionHandler({ DataIntegrityViolationException.class })
   public ResponseEntity<Map<String, Object>> handleDataIntegrityViolationException(
       DataIntegrityViolationException ex, HttpServletRequest request)
+  {
+    return createErrorResponse(HttpStatus.BAD_REQUEST, request, ex.getMessage());
+  }
+
+  /**
+   * For InvalidInputException , return BAD_REQUEST status code
+   * @param ex
+   * @param request
+   * @return
+   */
+  @ExceptionHandler({ InvalidInputException.class })
+  public ResponseEntity<Map<String, Object>> handleInvalidInputException(
+      InvalidInputException ex, HttpServletRequest request)
   {
     return createErrorResponse(HttpStatus.BAD_REQUEST, request, ex.getMessage());
   }

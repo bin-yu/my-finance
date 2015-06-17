@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.binyu.myfinance.backend.daos.VirtualAccountMapper">
+	<select id="getVirtualAccountList" resultMap="VirtualAccountMap">
+		SELECT p.id,p.name,p.description,sum(vp.amount) as amount
+		FROM virtual_accounts as p
+		left outer join virtual_accounts_in_physical_accounts as vp on vp.virtual_account_id=p.id
+		group by p.id
+		order by p.id
+	</select>
+	<select id="getVirtualAccountById" resultMap="VirtualAccountMap">
+		SELECT p.id,p.name,p.description,sum(vp.amount) as amount
+		FROM virtual_accounts as p
+		left outer join virtual_accounts_in_physical_accounts as vp on vp.virtual_account_id=p.id
+		WHERE p.id = #{id}
+		group by p.id
+	</select>
+	<insert id="addVirtualAccount" useGeneratedKeys="true" keyProperty="id">
+		insert
+		into virtual_accounts(name,description)
+		values
+		(#{name},#{description})
+	</insert>
+	<update id="updateVirtualAccount">
+		update
+		virtual_accounts
+		set name=#{name},description=#{description}
+		where id=#{id}
+	</update>
+	
+	<resultMap id="VirtualAccountMap" type="org.binyu.myfinance.backend.dtos.VirtualAccount">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="amount" column="amount" />
+	</resultMap>
+</mapper>

@@ -13,10 +13,12 @@ package org.binyu.myfinance.backend;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -69,6 +71,12 @@ public abstract class AbstractIntegrationTest extends AbstractTransactionalTestN
   protected <T> T deserialize(MvcResult result, Class<T> cls) throws IOException, JsonParseException, JsonMappingException
   {
     return mapper.readValue(result.getResponse().getContentAsByteArray(), cls);
+  }
+
+  protected <T> List<T> deserialize(MvcResult result, TypeReference typeReference) throws JsonParseException,
+      JsonMappingException, IOException
+  {
+    return mapper.readValue(result.getResponse().getContentAsByteArray(), typeReference);
   }
   // PRIVATE METHODS ------------------------------------------------
 

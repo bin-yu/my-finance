@@ -148,7 +148,10 @@ module.exports = function(grunt) {
 				globals : {
 					jQuery : true,
 					DEBUG : false,
-					console : false
+					console : false,
+					angular : true,
+					describe : true,
+					require : true
 				}
 			},
 			gruntfile : {

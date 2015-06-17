@@ -1,5 +1,5 @@
 /********************************************************************
- * File Name:    TestControllerSecurityTest.java
+ * File Name:    VirtualAccountMapper.java
  *
  * Date Created: Jun 15, 2015
  *
@@ -9,19 +9,13 @@
  *******************************************************************/
 
 // PACKAGE/IMPORTS --------------------------------------------------
-package org.binyu.myfinance.backend;
+package org.binyu.myfinance.backend.daos;
 
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import java.util.List;
 
-/**
- * TODO: Update with a detailed description of the interface/class.
- *
- */
-public class TestControllerSecurityTest extends AbstractWebIntegrationTest
+import org.binyu.myfinance.backend.dtos.VirtualAccount;
+
+public interface VirtualAccountMapper
 {
 
   // CONSTANTS ------------------------------------------------------
@@ -33,15 +27,15 @@ public class TestControllerSecurityTest extends AbstractWebIntegrationTest
   // CONSTRUCTORS ---------------------------------------------------
 
   // PUBLIC METHODS -------------------------------------------------
-  @Test
-  public void testSayHello() throws Exception
-  {
-    String name = "Marry";
-    ResponseEntity<String> resp = restTemplate.exchange(
-        constructFullURL("/hello/" + name), HttpMethod.GET, null,
-        String.class);
-    Assert.assertEquals(resp.getStatusCode(), HttpStatus.OK);
-  }
+
+  List<VirtualAccount> getVirtualAccountList();
+
+  void addVirtualAccount(VirtualAccount accountToAdd);
+
+  VirtualAccount getVirtualAccountById(long id);
+
+  void updateVirtualAccount(VirtualAccount accountToUpdate);
+
   // PROTECTED METHODS ----------------------------------------------
 
   // PRIVATE METHODS ------------------------------------------------
