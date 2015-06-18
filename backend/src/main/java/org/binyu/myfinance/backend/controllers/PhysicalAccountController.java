@@ -69,6 +69,13 @@ public class PhysicalAccountController
     }
     service.updatePhysicalAccount(accountToUpdate);
   }
+
+  @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+  public void deletePhysicalAccount(@PathVariable long id)
+      throws InvalidInputException
+  {
+    service.deletePhysicalAccount(id);
+  }
   // PROTECTED METHODS ----------------------------------------------
 
   // PRIVATE METHODS ------------------------------------------------

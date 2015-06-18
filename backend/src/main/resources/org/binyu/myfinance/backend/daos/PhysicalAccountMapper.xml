@@ -29,6 +29,11 @@
 		set name=#{name},description=#{description}
 		where id=#{id}
 	</update>
+	<delete id="deletePhysicalAccount">
+		delete
+		from physical_accounts
+		where id=#{id}
+	</delete>
 	
 	<resultMap id="physicalAccountMap" type="org.binyu.myfinance.backend.dtos.PhysicalAccount">
 		<id property="id" column="id" />

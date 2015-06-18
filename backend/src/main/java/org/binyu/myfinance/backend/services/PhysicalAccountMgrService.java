@@ -66,6 +66,11 @@ public class PhysicalAccountMgrService
     repo.updatePhysicalAccount(accountToUpdate);
   }
 
+  public void deletePhysicalAccount(long id)
+  {
+    repo.deletePhysicalAccount(id);
+  }
+
   // PRIVATE METHODS ------------------------------------------------
 
   // ACCESSOR METHODS -----------------------------------------------

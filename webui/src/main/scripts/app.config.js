@@ -7,4 +7,5 @@ angular.module('myFinance').constant('HostConfig', {
 	contextPath : 'my-finance-backend'
 }).constant('RestResources', {
 	physicalAccounts : '/physical_accounts',
+	physicalAccount : '/physical_accounts/{id}',
 }); 

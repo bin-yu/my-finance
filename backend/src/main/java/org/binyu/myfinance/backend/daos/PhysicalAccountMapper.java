@@ -36,6 +36,8 @@ public interface PhysicalAccountMapper
 
   void updatePhysicalAccount(PhysicalAccount accountToUpdate);
 
+  void deletePhysicalAccount(long id);
+
   // PROTECTED METHODS ----------------------------------------------
 
   // PRIVATE METHODS ------------------------------------------------

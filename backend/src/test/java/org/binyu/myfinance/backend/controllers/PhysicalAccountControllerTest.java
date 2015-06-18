@@ -11,6 +11,7 @@
 // PACKAGE/IMPORTS --------------------------------------------------
 package org.binyu.myfinance.backend.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -213,6 +214,22 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
     // db remain unchanged
     PhysicalAccount dbAct = physicalAccountMapper.getPhysicalAccountById(actOriginal.getId());
     Assert.assertEquals(dbAct, actOriginal);
+  }
+
+  @Test
+  public void testDeletePhysicalAccountWithValidInput() throws Exception
+  {
+    // prepare one dummy acount for delete test
+    PhysicalAccount actToDel = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "dummy", "dummy");
+
+    this.mockMvc
+        .perform(
+            delete("/physical_accounts/" + actToDel.getId())
+                .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk());
+    PhysicalAccount dbAct = physicalAccountMapper.getPhysicalAccountById(actToDel.getId());
+    Assert.assertNull(dbAct);
   }
 
   // PROTECTED METHODS ----------------------------------------------

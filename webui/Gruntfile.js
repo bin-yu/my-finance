@@ -151,7 +151,8 @@ module.exports = function(grunt) {
 					console : false,
 					angular : true,
 					describe : true,
-					require : true
+					require : true,
+					alert : false
 				}
 			},
 			gruntfile : {
@@ -166,7 +167,7 @@ module.exports = function(grunt) {
 		watch : {
 			gruntfile : {
 				files : '<%= jshint.gruntfile.src %>',
-				tasks : ['jshint:gruntfile'],
+				//tasks : ['jshint:gruntfile'],
 				options : {
 					spawn : false,
 					interrupt : true,
@@ -174,7 +175,7 @@ module.exports = function(grunt) {
 			},
 			js : {
 				files : ['<%= source.js %>', '<%= source.testjs %>'],
-				tasks : ['jshint:js'],
+				//tasks : ['jshint:js'],
 				options : {
 					livereload : true
 				}
