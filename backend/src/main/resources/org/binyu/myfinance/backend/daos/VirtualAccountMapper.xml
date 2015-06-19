@@ -4,14 +4,14 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.binyu.myfinance.backend.daos.VirtualAccountMapper">
 	<select id="getVirtualAccountList" resultMap="VirtualAccountMap">
-		SELECT p.id,p.name,p.description,sum(vp.amount) as amount
+		SELECT p.id,p.name,p.description,p.budget,sum(vp.amount) as amount
 		FROM virtual_accounts as p
 		left outer join account_stores as vp on vp.virtual_account_id=p.id
 		group by p.id
 		order by p.id
 	</select>
 	<select id="getVirtualAccountById" resultMap="VirtualAccountMap">
-		SELECT p.id,p.name,p.description,sum(vp.amount) as amount
+		SELECT p.id,p.name,p.description,p.budget,sum(vp.amount) as amount
 		FROM virtual_accounts as p
 		left outer join account_stores as vp on vp.virtual_account_id=p.id
 		WHERE p.id = #{id}
@@ -19,21 +19,27 @@
 	</select>
 	<insert id="addVirtualAccount" useGeneratedKeys="true" keyProperty="id">
 		insert
-		into virtual_accounts(name,description)
+		into virtual_accounts(name,description,budget)
 		values
-		(#{name},#{description})
+		(#{name},#{description},#{budget})
 	</insert>
 	<update id="updateVirtualAccount">
 		update
 		virtual_accounts
-		set name=#{name},description=#{description}
+		set name=#{name},description=#{description},budget=#{budget}
 		where id=#{id}
 	</update>
+	<delete id="deleteVirtualAccount">
+		delete
+		from virtual_accounts
+		where id=#{id}
+	</delete>
 	
 	<resultMap id="VirtualAccountMap" type="org.binyu.myfinance.backend.dtos.VirtualAccount">
 		<id property="id" column="id" />
 		<result property="name" column="name" />
 		<result property="description" column="description" />
+		<result property="budget" column="budget" />
 		<result property="amount" column="amount" />
 	</resultMap>
 </mapper>

@@ -1,0 +1,35 @@
+<table class="account-table">
+	<thead>
+		<tr>
+			<th>账户名</th>
+			<th>描述</th>
+			<th>预算（元）</th>
+			<th>账户余额（元）</th>
+			<th>操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr data-ng-repeat="(idx,account) in virtualAccountList track by account.id"  data-ng-class="account.isInEditMode? 'active-form':'static-form'">
+			<ng-form name="{{'form_'+account.id}}">
+			<td><input type="text" data-ng-model="account.name" required /></td>
+			<td><input type="text" data-ng-model="account.description"/></td>
+			<td><input type="number" data-ng-model="account.budget" min="0" integer /></td>
+			<td>{{account.amount}}</td>
+			<td>
+				<button class="ui-btn ui-shadow ui-corner-all ui-icon-edit ui-btn-icon-notext ui-btn-inline" data-ng-click="account.isInEditMode=!account.isInEditMode" data-ng-show="!account.isInEditMode">修改</button>
+				<button class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline" data-ng-show="!account.isInEditMode" data-ng-click="deleteAccount(idx)">删除</button>
+				<button class="ui-btn ui-shadow ui-corner-all ui-icon-check ui-btn-icon-notext ui-btn-inline" data-ng-disabled="{{'form_'+account.id}}.$invalid" data-ng-show="account.isInEditMode" data-ng-click="saveAccount(account)">保存</button>
+			</td>
+			</ng-form>
+		</tr>
+		<tr data-ng-form name="newAccountForm" class="active-form">
+			<td><input placeholder="输入账户名" type="text" id="newAccount_name" data-ng-model="newAccount.name" required /></td>
+			<td><input placeholder="输入描述信息" type="text" id="newAccount_description" data-ng-model="newAccount.description"/></td>
+			<td><input placeholder="输入每月预算" type="number" id="newAccount_budget" data-ng-model="newAccount.budget" min="0" integer /></td>
+			
+			<td></td>
+			<td><button class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline" data-ng-disabled="newAccountForm.$invalid" data-ng-click="addNewAccount()">添加</button>
+			</td>
+		</tr>
+	</tbody>
+</table>

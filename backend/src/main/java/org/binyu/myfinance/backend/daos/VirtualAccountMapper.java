@@ -36,6 +36,8 @@ public interface VirtualAccountMapper
 
   void updateVirtualAccount(VirtualAccount accountToUpdate);
 
+  void deleteVirtualAccount(long id);
+
   // PROTECTED METHODS ----------------------------------------------
 
   // PRIVATE METHODS ------------------------------------------------

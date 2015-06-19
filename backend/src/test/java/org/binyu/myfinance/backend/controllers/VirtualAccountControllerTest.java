@@ -11,6 +11,7 @@
 // PACKAGE/IMPORTS --------------------------------------------------
 package org.binyu.myfinance.backend.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -93,7 +94,7 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
   public void testAddVirtualAccountWithInvalidInput(String accountName) throws Exception
   {
     // prepare one dummy acount for dup test
-    AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy");
+    AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy", 1);
 
     VirtualAccount actToAdd = new VirtualAccount(accountName, "desc");
     this.mockMvc
@@ -111,7 +112,7 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
   public void testUpdateVirtualAccountWithValidInput() throws Exception
   {
     // prepare one dummy acount for update test
-    VirtualAccount actToUpdate = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy");
+    VirtualAccount actToUpdate = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy", 1);
     ;
 
     String newName = "changedName";
@@ -139,7 +140,7 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
   public void testUpdateVirtualAccountWithPathIdWrong() throws Exception
   {
     // prepare one dummy acount for update test
-    VirtualAccount actOriginal = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy");
+    VirtualAccount actOriginal = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy", 1);
     ;
 
     VirtualAccount actToUpdate = actOriginal.clone();
@@ -166,7 +167,7 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
   public void testUpdateVirtualAccountWithBodyIdWrong() throws Exception
   {
     // prepare one dummy acount for update test
-    VirtualAccount actOriginal = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy");
+    VirtualAccount actOriginal = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy", 1);
     ;
 
     VirtualAccount actToUpdate = actOriginal.clone();
@@ -195,7 +196,7 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
   public void testUpdateVirtualAccountWithNullName() throws Exception
   {
     // prepare one dummy acount for update test
-    VirtualAccount actOriginal = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy");
+    VirtualAccount actOriginal = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy", 1);
 
     VirtualAccount actToUpdate = actOriginal.clone();
     // set null name
@@ -216,6 +217,22 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
     // db remain unchanged
     VirtualAccount dbAct = VirtualAccountMapper.getVirtualAccountById(actOriginal.getId());
     Assert.assertEquals(dbAct, actOriginal);
+  }
+
+  @Test
+  public void testDeleteVirtualAccountWithValidInput() throws Exception
+  {
+    // prepare one dummy acount for delete test
+    VirtualAccount actToDel = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", "dummy", 1);
+
+    this.mockMvc
+        .perform(
+            delete("/virtual_accounts/" + actToDel.getId())
+                .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk());
+    VirtualAccount dbAct = VirtualAccountMapper.getVirtualAccountById(actToDel.getId());
+    Assert.assertNull(dbAct);
   }
 
   // PROTECTED METHODS ----------------------------------------------

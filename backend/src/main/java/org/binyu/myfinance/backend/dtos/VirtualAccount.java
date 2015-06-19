@@ -26,6 +26,7 @@ public class VirtualAccount implements Cloneable
   private long id;
   private String name;
   private String description;
+  private long budget;
   private long amount;
 
   // CONSTRUCTORS ---------------------------------------------------
@@ -43,12 +44,19 @@ public class VirtualAccount implements Cloneable
     return (VirtualAccount) super.clone();
   }
 
+  // PROTECTED METHODS ----------------------------------------------
+
+  // PRIVATE METHODS ------------------------------------------------
+
+  // ACCESSOR METHODS -----------------------------------------------
+
   @Override
   public int hashCode()
   {
     final int prime = 31;
     int result = 1;
     result = prime * result + (int) (amount ^ (amount >>> 32));
+    result = prime * result + (int) (budget ^ (budget >>> 32));
     result = prime * result + ((description == null) ? 0 : description.hashCode());
     result = prime * result + (int) (id ^ (id >>> 32));
     result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -66,6 +74,8 @@ public class VirtualAccount implements Cloneable
       return false;
     VirtualAccount other = (VirtualAccount) obj;
     if (amount != other.amount)
+      return false;
+    if (budget != other.budget)
       return false;
     if (description == null)
     {
@@ -85,12 +95,6 @@ public class VirtualAccount implements Cloneable
       return false;
     return true;
   }
-
-  // PROTECTED METHODS ----------------------------------------------
-
-  // PRIVATE METHODS ------------------------------------------------
-
-  // ACCESSOR METHODS -----------------------------------------------
 
   public VirtualAccount(String name, String description)
   {
@@ -138,4 +142,15 @@ public class VirtualAccount implements Cloneable
   {
     this.amount = amount;
   }
+
+  public long getBudget()
+  {
+    return budget;
+  }
+
+  public void setBudget(long budget)
+  {
+    this.budget = budget;
+  }
+
 }

@@ -27,7 +27,7 @@ function($routeProvider) {
 		controller : 'PhysicalAccountCtrl'
 	}).when('/virtual-accounts', {
 		templateUrl : 'views/account/virtual-accounts.html',
-		controller : 'AddRecordCtrl'
+		controller : 'VirtualAccountCtrl'
 	}).when('/divide-money', {
 		templateUrl : 'views/account/divide-money.html',
 		controller : 'AddRecordCtrl'
@@ -53,4 +53,6 @@ myApp.constant('HostConfig', {
 }).constant('RestResources', {
 	physicalAccounts : '/physical_accounts',
 	physicalAccount : '/physical_accounts/{id}',
+	virtualAccounts : '/virtual_accounts',
+	virtualAccount : '/virtual_accounts/{id}',
 });

@@ -13,6 +13,7 @@ CREATE TABLE virtual_accounts (
 id  bigint NOT NULL AUTO_INCREMENT ,
 name  varchar(255) NOT NULL ,
 description  varchar(255) NULL,
+budget bigint default 0,
 PRIMARY KEY (id)
 );
 CREATE UNIQUE INDEX virtual_accounts_idx_name ON virtual_accounts(name);

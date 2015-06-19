@@ -95,7 +95,8 @@ public class AccountTestUtils
     {
       String name = "RandomAcct-" + random.nextInt();
       String desc = "desc-" + random.nextInt();
-      VirtualAccount account = insertVirtualAccount(jdbcTemplate, name, desc);
+      long budget = random.nextLong();
+      VirtualAccount account = insertVirtualAccount(jdbcTemplate, name, desc, budget);
       allAccounts.add(account);
     }
     Collections.sort(allAccounts, new Comparator<VirtualAccount>()
@@ -111,10 +112,12 @@ public class AccountTestUtils
     return allAccounts;
   }
 
-  public static VirtualAccount insertVirtualAccount(JdbcTemplate jdbcTemplate, String name, String desc) throws SQLException
+  public static VirtualAccount insertVirtualAccount(JdbcTemplate jdbcTemplate, String name, String desc, long budget)
+      throws SQLException
   {
-    jdbcTemplate.update("insert into virtual_accounts(name,description) values (?,?)", new Object[] { name, desc },
-        new int[] { Types.CHAR, Types.CHAR });
+    jdbcTemplate.update("insert into virtual_accounts(name,description,budget) values (?,?,?)",
+        new Object[] { name, desc, budget },
+        new int[] { Types.CHAR, Types.CHAR, Types.BIGINT });
     VirtualAccount account = jdbcTemplate.queryForObject("select * from virtual_accounts where name = ?", new Object[] { name },
         new RowMapper<VirtualAccount>()
         {
@@ -126,6 +129,7 @@ public class AccountTestUtils
             account.setId(rs.getLong("id"));
             account.setName(rs.getString("name"));
             account.setDescription(rs.getString("description"));
+            account.setBudget(rs.getLong("budget"));
             return account;
           }
 

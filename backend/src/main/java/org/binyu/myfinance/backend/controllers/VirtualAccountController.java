@@ -69,6 +69,13 @@ public class VirtualAccountController
     }
     service.updateVirtualAccount(accountToUpdate);
   }
+
+  @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+  public void deleteVirtualAccount(@PathVariable long id)
+      throws InvalidInputException
+  {
+    service.deleteVirtualAccount(id);
+  }
   // PROTECTED METHODS ----------------------------------------------
 
   // PRIVATE METHODS ------------------------------------------------

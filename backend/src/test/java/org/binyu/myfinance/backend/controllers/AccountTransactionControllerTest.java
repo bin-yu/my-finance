@@ -76,8 +76,8 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
   {
     fromPAccount = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "from", "dummy");
     toPAccount = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "to", "dummy");
-    fromVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "from", "dummy");
-    toVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "to", "dummy");
+    fromVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "from", "dummy", 0);
+    toVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "to", "dummy", 0);
 
   }
 

@@ -66,6 +66,11 @@ public class VirtualAccountMgrService
     repo.updateVirtualAccount(accountToUpdate);
   }
 
+  public void deleteVirtualAccount(long id)
+  {
+    repo.deleteVirtualAccount(id);
+  }
+
   // PRIVATE METHODS ------------------------------------------------
 
   // ACCESSOR METHODS -----------------------------------------------
