@@ -36,6 +36,20 @@ public class AccountTestUtils
 
   // CLASS VARIABLES ------------------------------------------------
 
+  private static final class VirtualAccountMapper implements RowMapper<VirtualAccount>
+  {
+    @Override
+    public VirtualAccount mapRow(ResultSet rs, int rowNum) throws SQLException
+    {
+      VirtualAccount account = new VirtualAccount();
+      account.setId(rs.getLong("id"));
+      account.setName(rs.getString("name"));
+      account.setDescription(rs.getString("description"));
+      account.setBudget(rs.getLong("budget"));
+      return account;
+    }
+  }
+
   private static SecureRandom random = new SecureRandom();
 
   // INSTANCE VARIABLES ---------------------------------------------
@@ -118,26 +132,14 @@ public class AccountTestUtils
     jdbcTemplate.update("insert into virtual_accounts(name,description,budget) values (?,?,?)",
         new Object[] { name, desc, budget },
         new int[] { Types.CHAR, Types.CHAR, Types.BIGINT });
-    VirtualAccount account = jdbcTemplate.queryForObject("select * from virtual_accounts where name = ?", new Object[] { name },
-        new RowMapper<VirtualAccount>()
-        {
-
-          @Override
-          public VirtualAccount mapRow(ResultSet rs, int rowNum) throws SQLException
-          {
-            VirtualAccount account = new VirtualAccount();
-            account.setId(rs.getLong("id"));
-            account.setName(rs.getString("name"));
-            account.setDescription(rs.getString("description"));
-            account.setBudget(rs.getLong("budget"));
-            return account;
-          }
-
-        });
-    return account;
+    return getVirtualAccountByName(jdbcTemplate, name);
   }
 
-  // PROTECTED METHODS ----------------------------------------------
+  public static VirtualAccount getVirtualAccountById(JdbcTemplate jdbcTemplate, long id)
+  {
+    return jdbcTemplate.queryForObject("select * from virtual_accounts where id = ?", new Object[] { id },
+        new VirtualAccountMapper());
+  }
 
   public static void initAccountStore(JdbcTemplate jdbcTemplate, long physicalAccountId, long virtualAccountId, long amount)
       throws SQLException
@@ -149,8 +151,15 @@ public class AccountTestUtils
     Assert.assertEquals(updateCnt, 1);
   }
 
+  // PROTECTED METHODS ----------------------------------------------
+
   // PRIVATE METHODS ------------------------------------------------
 
+  private static VirtualAccount getVirtualAccountByName(JdbcTemplate jdbcTemplate, String name)
+  {
+    return jdbcTemplate.queryForObject("select * from virtual_accounts where name = ?", new Object[] { name },
+        new VirtualAccountMapper());
+  }
   // ACCESSOR METHODS -----------------------------------------------
 
 }

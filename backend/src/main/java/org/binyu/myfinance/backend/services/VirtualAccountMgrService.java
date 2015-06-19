@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.binyu.myfinance.backend.daos.VirtualAccountMapper;
 import org.binyu.myfinance.backend.dtos.VirtualAccount;
+import org.binyu.myfinance.backend.exceptions.InvalidInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,13 +62,21 @@ public class VirtualAccountMgrService
     }
   }
 
-  public void updateVirtualAccount(VirtualAccount accountToUpdate)
+  public void updateVirtualAccount(VirtualAccount accountToUpdate) throws InvalidInputException
   {
+    if (VirtualAccount.UNALLOCATED_ACCOUNT_ID == accountToUpdate.getId())
+    {
+      throw new InvalidInputException("Can't update builtin account!");
+    }
     repo.updateVirtualAccount(accountToUpdate);
   }
 
-  public void deleteVirtualAccount(long id)
+  public void deleteVirtualAccount(long id) throws InvalidInputException
   {
+    if (VirtualAccount.UNALLOCATED_ACCOUNT_ID == id)
+    {
+      throw new InvalidInputException("Can't delete builtin account!");
+    }
     repo.deleteVirtualAccount(id);
   }
 

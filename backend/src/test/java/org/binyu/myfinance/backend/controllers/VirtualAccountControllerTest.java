@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.binyu.myfinance.backend.AbstractIntegrationTest;
@@ -47,6 +48,7 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
   // INSTANCE VARIABLES ---------------------------------------------
   @Autowired
   JdbcTemplate jdbcTemplate;
+
   @Autowired
   VirtualAccountMapper VirtualAccountMapper;
 
@@ -56,7 +58,9 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
   @Test(dataProvider = "testGetVirtualAccountListData")
   public void testGetVirtualAccountList(int accountNum) throws Exception
   {
-    List<VirtualAccount> allAccounts = AccountTestUtils.insertRandomVirtualAccounts(jdbcTemplate, accountNum);
+    List<VirtualAccount> allAccounts = new ArrayList<VirtualAccount>();
+    allAccounts.add(AccountTestUtils.getVirtualAccountById(jdbcTemplate, VirtualAccount.UNALLOCATED_ACCOUNT_ID));
+    allAccounts.addAll(AccountTestUtils.insertRandomVirtualAccounts(jdbcTemplate, accountNum));
     MvcResult result = this.mockMvc
         .perform(get("/virtual_accounts").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
         .andDo(MockMvcResultHandlers.print())
@@ -233,6 +237,19 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
         .andExpect(status().isOk());
     VirtualAccount dbAct = VirtualAccountMapper.getVirtualAccountById(actToDel.getId());
     Assert.assertNull(dbAct);
+  }
+
+  @Test
+  public void testDeleteVirtualAccountWithUnAllocatedAccountId() throws Exception
+  {
+    this.mockMvc
+        .perform(
+            delete("/virtual_accounts/" + VirtualAccount.UNALLOCATED_ACCOUNT_ID)
+                .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isBadRequest());
+    VirtualAccount dbAct = VirtualAccountMapper.getVirtualAccountById(VirtualAccount.UNALLOCATED_ACCOUNT_ID);
+    Assert.assertNotNull(dbAct);
   }
 
   // PROTECTED METHODS ----------------------------------------------

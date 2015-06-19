@@ -21,6 +21,7 @@ import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * TODO: Update with a detailed description of the interface/class.
@@ -31,6 +32,8 @@ import org.springframework.context.annotation.Configuration;
 public class PersistentConfig
 {
   // CONSTANTS ------------------------------------------------------
+
+  private static final String MYBATIS_CONFIG_XML = "mybatis-config.xml";
 
   // CLASS VARIABLES ------------------------------------------------
 
@@ -44,6 +47,11 @@ public class PersistentConfig
   {
     SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
     sessionFactory.setDataSource(dataSource);
+    ClassPathResource configLocation = new ClassPathResource(MYBATIS_CONFIG_XML);
+    if (configLocation.exists())
+    {
+      sessionFactory.setConfigLocation(configLocation);
+    }
     DatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();
     Properties p = new Properties();
     // p.setProperty("Oracle", "oracle");

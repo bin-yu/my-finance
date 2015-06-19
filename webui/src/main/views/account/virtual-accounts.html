@@ -16,8 +16,8 @@
 			<td><input type="number" data-ng-model="account.budget" min="0" integer /></td>
 			<td>{{account.amount}}</td>
 			<td>
-				<button class="ui-btn ui-shadow ui-corner-all ui-icon-edit ui-btn-icon-notext ui-btn-inline" data-ng-click="account.isInEditMode=!account.isInEditMode" data-ng-show="!account.isInEditMode">修改</button>
-				<button class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline" data-ng-show="!account.isInEditMode" data-ng-click="deleteAccount(idx)">删除</button>
+				<button class="ui-btn ui-shadow ui-corner-all ui-icon-edit ui-btn-icon-notext ui-btn-inline" data-ng-show="!account.isInEditMode && (account.id>=0)" data-ng-click="account.isInEditMode=!account.isInEditMode">修改</button>
+				<button class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline" data-ng-show="!account.isInEditMode && (account.id>=0)" data-ng-click="deleteAccount(idx)">删除</button>
 				<button class="ui-btn ui-shadow ui-corner-all ui-icon-check ui-btn-icon-notext ui-btn-inline" data-ng-disabled="{{'form_'+account.id}}.$invalid" data-ng-show="account.isInEditMode" data-ng-click="saveAccount(account)">保存</button>
 			</td>
 			</ng-form>
