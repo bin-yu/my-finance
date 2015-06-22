@@ -4,18 +4,19 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.binyu.myfinance.backend.daos.VirtualAccountMapper">
 	<select id="getVirtualAccountList" resultMap="VirtualAccountMap">
-		SELECT p.id,p.name,p.description,p.budget,sum(vp.amount) as amount
-		FROM virtual_accounts as p
-		left outer join account_stores as vp on vp.virtual_account_id=p.id
-		group by p.id
-		order by p.id
+		SELECT v.id,v.name,v.description,v.budget,vp.amount as vp_amount,p.id as p_id,p.name as p_name
+		FROM virtual_accounts as v
+		left outer join account_stores as vp on vp.virtual_account_id=v.id
+		left outer join physical_accounts as p on p.id=vp.physical_account_id
+		order by v.id,p.id
 	</select>
 	<select id="getVirtualAccountById" resultMap="VirtualAccountMap">
-		SELECT p.id,p.name,p.description,p.budget,sum(vp.amount) as amount
-		FROM virtual_accounts as p
-		left outer join account_stores as vp on vp.virtual_account_id=p.id
-		WHERE p.id = #{id}
-		group by p.id
+		SELECT v.id,v.name,v.description,v.budget,vp.amount as vp_amount,p.id as p_id,p.name as p_name
+		FROM virtual_accounts as v
+		left outer join account_stores as vp on vp.virtual_account_id=v.id
+		left outer join physical_accounts as p on p.id=vp.physical_account_id
+		WHERE v.id = #{id}
+		order by v.id,p.id
 	</select>
 	<insert id="addVirtualAccount" useGeneratedKeys="true" keyProperty="id">
 		insert
@@ -40,6 +41,10 @@
 		<result property="name" column="name" />
 		<result property="description" column="description" />
 		<result property="budget" column="budget" />
-		<result property="amount" column="amount" />
+		<collection property="mappedPhysicalAccounts" ofType="org.binyu.myfinance.backend.dtos.ExtAccountStore">
+			<id property="physicalAccountId" column="p_id" />
+			<result property="physicalAccountName" column="p_name" />
+			<result property="amount" column="vp_amount" />
+		</collection>
 	</resultMap>
 </mapper>

@@ -1,6 +1,7 @@
 /**
- * 	Control sidebar's size and position
+ * 	Control mobile angular ui sidebar's size and position
  */
+/*
 @media only screen and (max-width: 480px) {
 	.sidebar-left {
 		width: 50%;
@@ -56,23 +57,90 @@
 	
 	background-color:#DFDFDF;
 	color:#000000;
-}
+}*/
+
 /**
- * 	for page trasition slide effect
+ * 	For jquery mobile left side bar
  */
+.ui-panel-inner {
+	margin-top:42px;
+	margin-bottom:42px;
+	padding:0px;
+}
+.ui-btn-corner-all, .ui-btn.ui-corner-all {
+	border-radius:10px;
+}
+/* for pane, header and footer*/
+.ui-page, .ui-page .ui-panel, .ui-page .ui-header, .ui-page .ui-footer {
+	background-color:rgb(85,85,85);
+	color:#ffffff;
+	border: none;
+	padding:0;
+}
+.ui-fixed-hidden {
+  position: fixed;
+}
+/* for page body */
+.ui-panel-wrapper{
+		position:absolute;
+	}
+	
+@media only screen and (max-width: 480px) {
+	.ui-panel-wrapper, .ui-header, .ui-footer {
+		width: 100%;
+	}
+}
+/* always show left side bar and hide the menu button for large screen*/
+@media only screen and (min-width: 480px) {
+	#leftbar {
+		visibility: visible;
+		position: absolute;
+		left: 0;
+		float: left;
+		width: 15%;
+
+		-webkit-transition: none !important;
+		-moz-transition: none !important;
+		transition: none !important;
+		-webkit-transform: none !important;
+		-moz-transform: none !important;
+		transform: none !important;
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+		box-shadow: none;
+		clip: initial;
+	}
+
+	#link_menu {
+		display: none;
+	}
+
+	.ui-panel-wrapper, .ui-header, .ui-footer {
+		left:15%;
+		width: 85%;
+	}
+}
+
+/**
+ * 	for angularjs page trasition slide effect
+ */
+
 .slide-animate.ng-enter, .slide-animate.ng-leave {
-	-webkit-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.25s;
-	-moz-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.25s;
-	-o-transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.25s;
-	transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.25s;
+	-webkit-transition: all linear 0.5s;
+	-moz-transition: all linear 0.5s;
+	-o-transition: all linear 0.5s;
+	transition: all linear 0.5s;
 	display: block;
 	width: 100%;
 	position: absolute;
 }
 
+
+
 .slide-animate.ng-enter {
 	left: 100%;
 }
+
 .slide-animate.ng-enter.ng-enter-active {
 	left: 0;
 }
@@ -82,6 +150,8 @@
 .slide-animate.ng-leave {
 	display: none;
 }
+
+
 /**
  * 	Overall font
  */

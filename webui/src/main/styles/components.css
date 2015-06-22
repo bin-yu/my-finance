@@ -9,10 +9,10 @@
 	width: 130px;
 	height: 130px;
 	border-radius: 50%;
-	background-image: -moz-radial-gradient(45px 45px 45deg, circle farthest-corner, lightgreen 0%, green 100%, blue 5%);
-	background-image: -webkit-radial-gradient(45px 45px, circle farthest-corner, lightgreen 0%, green 100%, blue 5%);
-	background-image: radial-gradient(45px 45px, circle farthest-corner, lightgreen 0%, green 100%, blue 5%);
-	border: 1px solid green;
+	background-image: -moz-radial-gradient(45px 45px 45deg, circle farthest-corner, black 0%, gray 100%, white 5%);
+	background-image: -webkit-radial-gradient(45px 45px, circle farthest-corner, black 0%, gray 100%, white 5%);
+	background-image: radial-gradient(45px 45px, circle farthest-corner, black 0%, gray 100%, white 5%);
+	border: 1px solid gray;
 	box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 	position: relative;
 	display: inline-block;
@@ -21,12 +21,14 @@
 	text-decoration: none;
 	text-align: center;
 	font-size: 1em;
-	color: #000000;
+}
+.ui-page a.circle-button {
+	color: #ffffff;
 }
 .circle-button:hover {
-	background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, green 0%, lightgreen 100%, blue 95%);
-	background-image: -webkit-radial-gradient(45px 45px, circle cover, green, lightgreen);
-	background-image: radial-gradient(45px 45px 45deg, circle cover, green 0%, lightgreen 100%, blue 95%);
+	background-image: -moz-radial-gradient(45px 45px 45deg, circle cover, gray 0%, black 100%, white 95%);
+	background-image: -webkit-radial-gradient(45px 45px, circle cover, gray, black);
+	background-image: radial-gradient(45px 45px 45deg, circle cover, gray 0%, black 100%, white 95%);
 }
 @media only screen and (max-width: 480px) {
 	.circle-button {
@@ -35,6 +37,7 @@
 		line-height: 50px;
 		border-radius: 0px;
 		border: none;
+		float: left;
 	}
 }
 
@@ -42,9 +45,9 @@
  * 	Styles for the summary area on home page.
  */
 .account-summary {
-	width: 100%;
+	/*width: 100%;*/
 	border: none;
-	padding: 10px;
+	padding: 16px;
 	background-color: #C0C0C0;
 	color: green;
 	text-align: left;
@@ -61,22 +64,35 @@
 	color: #C12E2A;
 }
 
+
+
+/**
+ * 	Styles for editable lists(physical/virtual account lists, etc.)
+ */
 .account-table {
 	width: 100%;
 	table-layout: fixed;
+	border-collapse: collapse;
 }
-.account-table thead {
-	border-bottom: 1px solid white;
-	line-height: 40px;
+.account-table thead tr {
 }
+.account-table thead tr th {
+	background-color :#C0C0C0;
+	line-height : 35px;
+	padding-bottom:5px;
+	/*border-left: 10px solid #f9f9f9;*/
+	padding-right:10px;
+    border-radius: 10px;
+    box-shadow: inset 0px 0px 10px #999;
+}
+
+
+
 .active-form input.ng-invalid.ng-touched {
 	background-color: #FA787E;
 }
 .active-form input.ng-valid.ng-touched {
 	background-color: #FFFFFF;
-}
-.ui-btn {
-	border-color: rgb(0, 122, 255);
 }
 .static-form input {
 	background-color: rgba(0, 0, 0, 0);
@@ -91,3 +107,10 @@
 	user-select: none;
 }
 
+/* for sliders */
+.ui-field-contain > label {
+	width : 40%;
+}
+.ui-field-contain > label ~ [class*="ui-"] {
+	width : 50%;
+}

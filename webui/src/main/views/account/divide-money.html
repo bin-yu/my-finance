@@ -1,0 +1,30 @@
+<form>
+	<div class="ui-field-contain">
+		<label for="target_physical_account">请选择用于划拨的物理账户：</label>
+		<select id="target_physical_account" data-ng-model="allocating.targetPhysicalAccount" data-ng-options="account.name for account in physicalAccountList">
+		</select>
+	</div>
+	<div class="ui-field-contain">
+		<label for="unallocated">未分配资金：</label>
+		<label id="unallocated" name="unallocated" >{{allocating.remain()}}</label>
+	</div>
+	<div data-ng-repeat="va in virtualAccountList">
+		allocated: {{va.allocated}}
+	<jslider allocated="va.allocated" sliderid="slider_{{va.id}}" min="0" max="100" label="{{va.name}}" />
+	
+		<!--
+		<div class="ui-field-contain" jqm >
+		<label for="{{id}}">{{va.name}} : </label>
+		<input
+			   type="range"
+			   name="{{va.id}}"
+			   id="{{va.id}}"
+			   min="0"
+			   max="100"
+			   data-ng-model="va.allocated"
+		/>
+		</div>-->
+		
+	</div>
+	<input type="submit" value="执行" data-ng-click="doDivide()"/>
+</form>

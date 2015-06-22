@@ -43,13 +43,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
  * TODO: Update with a detailed description of the interface/class.
- *
+ * 
  */
 public class AccountTransactionControllerTest extends AbstractIntegrationTest
 {
@@ -72,13 +73,22 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
 
   // PUBLIC METHODS -------------------------------------------------
   @BeforeClass
-  public void prepareBuiltinAccountAndTransactionData() throws SQLException
+  public void prepareBuiltinAccounts() throws SQLException
   {
     fromPAccount = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "from", "dummy");
     toPAccount = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "to", "dummy");
     fromVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "from", "dummy", 0);
     toVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "to", "dummy", 0);
 
+  }
+
+  @AfterClass
+  public void cleanBuiltinAccounts()
+  {
+    AccountTestUtils.deletePhysicalAccount(jdbcTemplate, fromPAccount);
+    AccountTestUtils.deletePhysicalAccount(jdbcTemplate, toPAccount);
+    AccountTestUtils.deleteVirtualAccount(jdbcTemplate, fromVAccount);
+    AccountTestUtils.deleteVirtualAccount(jdbcTemplate, toVAccount);
   }
 
   @Test

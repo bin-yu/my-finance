@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.binyu.myfinance.backend.AbstractIntegrationTest;
 import org.binyu.myfinance.backend.daos.VirtualAccountMapper;
+import org.binyu.myfinance.backend.dtos.ExtAccountStore;
+import org.binyu.myfinance.backend.dtos.PhysicalAccount;
 import org.binyu.myfinance.backend.dtos.VirtualAccount;
 import org.binyu.myfinance.backend.utils.AccountTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +73,28 @@ public class VirtualAccountControllerTest extends AbstractIntegrationTest
     {
     });
     Assert.assertEquals(actList, allAccounts);
+  }
+
+  @Test
+  public void testGetVirtualAccountListWithAccountStores() throws Exception
+  {
+    PhysicalAccount targetPAccount = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "dummy", null);
+    VirtualAccount targetVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", null, 10);
+    long amount = 99;
+    AccountTestUtils.updateAccountStore(jdbcTemplate, targetPAccount.getId(), targetVAccount.getId(), amount);
+    targetVAccount.getMappedPhysicalAccounts().add(
+        ExtAccountStore.newPhysicalInstance(targetPAccount.getId(), targetPAccount.getName(), amount));
+    MvcResult result = this.mockMvc
+        .perform(get("/virtual_accounts").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json;charset=UTF-8"))
+        .andReturn();
+    List<VirtualAccount> actList = deserialize(result, new TypeReference<List<VirtualAccount>>()
+    {
+    });
+    Assert.assertEquals(actList.size(), 2);
+    Assert.assertEquals(actList.get(1), targetVAccount);
   }
 
   @Test

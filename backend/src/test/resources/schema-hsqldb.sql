@@ -23,8 +23,8 @@ physical_account_id  bigint NOT NULL,
 virtual_account_id  bigint NOT NULL,
 amount bigint default 0,
 PRIMARY KEY (physical_account_id,virtual_account_id),
-FOREIGN KEY (physical_account_id) REFERENCES physical_accounts (id),
-FOREIGN KEY (virtual_account_id) REFERENCES virtual_accounts (id)
+FOREIGN KEY (physical_account_id) REFERENCES physical_accounts (id) ON DELETE CASCADE,
+FOREIGN KEY (virtual_account_id) REFERENCES virtual_accounts (id) ON DELETE CASCADE
 );
 
 CREATE TABLE account_audits (
@@ -38,8 +38,4 @@ to_virtual_account_id  bigint NULL,
 amount bigint NOT NULL,
 description   varchar(255) NULL,
 PRIMARY KEY (id),
-FOREIGN KEY (from_physical_account_id) REFERENCES physical_accounts (id),
-FOREIGN KEY (from_virtual_account_id) REFERENCES virtual_accounts (id),
-FOREIGN KEY (to_physical_account_id) REFERENCES physical_accounts (id),
-FOREIGN KEY (to_virtual_account_id) REFERENCES virtual_accounts (id)
 )

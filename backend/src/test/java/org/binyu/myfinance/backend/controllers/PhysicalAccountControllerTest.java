@@ -24,7 +24,9 @@ import java.util.List;
 
 import org.binyu.myfinance.backend.AbstractIntegrationTest;
 import org.binyu.myfinance.backend.daos.PhysicalAccountMapper;
+import org.binyu.myfinance.backend.dtos.ExtAccountStore;
 import org.binyu.myfinance.backend.dtos.PhysicalAccount;
+import org.binyu.myfinance.backend.dtos.VirtualAccount;
 import org.binyu.myfinance.backend.utils.AccountTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -67,6 +69,28 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
     {
     });
     Assert.assertEquals(actList, allAccounts);
+  }
+
+  @Test
+  public void testGetPhysicalAccountListWithAccountStores() throws Exception
+  {
+    PhysicalAccount targetPAccount = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "dummy", null);
+    VirtualAccount targetVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "dummy", null, 10);
+    long amount = 99;
+    AccountTestUtils.updateAccountStore(jdbcTemplate, targetPAccount.getId(), targetVAccount.getId(), amount);
+    targetPAccount.getMappedVirtualAccounts().add(
+        ExtAccountStore.newVirtualInstance(targetVAccount.getId(), targetVAccount.getName(), amount));
+    MvcResult result = this.mockMvc
+        .perform(get("/physical_accounts").accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json;charset=UTF-8"))
+        .andReturn();
+    List<PhysicalAccount> actList = deserialize(result, new TypeReference<List<PhysicalAccount>>()
+    {
+    });
+    Assert.assertEquals(actList.size(), 1);
+    Assert.assertEquals(actList.get(0), targetPAccount);
   }
 
   @Test
@@ -119,7 +143,6 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
     String newDescription = "changedDesc";
     actToUpdate.setDescription(newDescription);
     long newAmount = 10000;
-    actToUpdate.setAmount(newAmount);
     this.mockMvc
         .perform(
             put("/physical_accounts/" + actToUpdate.getId())
@@ -146,8 +169,6 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
     actToUpdate.setName(newName);
     String newDescription = "changedDesc";
     actToUpdate.setDescription(newDescription);
-    long newAmount = 10000;
-    actToUpdate.setAmount(newAmount);
     this.mockMvc
         .perform(
             put("/physical_accounts/" + (actOriginal.getId() - 10000))
@@ -174,8 +195,6 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
     actToUpdate.setName(newName);
     String newDescription = "changedDesc";
     actToUpdate.setDescription(newDescription);
-    long newAmount = 10000;
-    actToUpdate.setAmount(newAmount);
     this.mockMvc
         .perform(
             put("/physical_accounts/" + actOriginal.getId())
@@ -201,8 +220,6 @@ public class PhysicalAccountControllerTest extends AbstractIntegrationTest
     actToUpdate.setName(newName);
     String newDescription = "changedDesc";
     actToUpdate.setDescription(newDescription);
-    long newAmount = 10000;
-    actToUpdate.setAmount(newAmount);
     this.mockMvc
         .perform(
             put("/physical_accounts/" + actOriginal.getId())

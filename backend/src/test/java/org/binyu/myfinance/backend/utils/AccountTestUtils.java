@@ -28,7 +28,7 @@ import org.testng.Assert;
 
 /**
  * TODO: Update with a detailed description of the interface/class.
- *
+ * 
  */
 public class AccountTestUtils
 {
@@ -151,6 +151,16 @@ public class AccountTestUtils
     Assert.assertEquals(updateCnt, 1);
   }
 
+  public static void deletePhysicalAccount(JdbcTemplate jdbcTemplate, PhysicalAccount account)
+  {
+    jdbcTemplate.update("delete from physical_accounts where id = ?", new Object[] { account.getId() });
+  }
+
+  public static void deleteVirtualAccount(JdbcTemplate jdbcTemplate, VirtualAccount account)
+  {
+    jdbcTemplate.update("delete from virtual_accounts where id = ?", new Object[] { account.getId() });
+  }
+
   // PROTECTED METHODS ----------------------------------------------
 
   // PRIVATE METHODS ------------------------------------------------
@@ -160,6 +170,13 @@ public class AccountTestUtils
     return jdbcTemplate.queryForObject("select * from virtual_accounts where name = ?", new Object[] { name },
         new VirtualAccountMapper());
   }
+
   // ACCESSOR METHODS -----------------------------------------------
+
+  public static void updateAccountStore(JdbcTemplate jdbcTemplate, long pId, long vId, long amount)
+  {
+    jdbcTemplate.update("insert into account_stores(physical_account_id,virtual_account_id,amount) values(?,?,?)", new Object[] {
+      pId, vId, amount });
+  }
 
 }

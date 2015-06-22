@@ -11,9 +11,15 @@
 // PACKAGE/IMPORTS --------------------------------------------------
 package org.binyu.myfinance.backend.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TODO: Update with a detailed description of the interface/class.
- *
+ * 
  */
 public class VirtualAccount implements Cloneable
 {
@@ -27,7 +33,7 @@ public class VirtualAccount implements Cloneable
   private String name;
   private String description;
   private long budget;
-  private long amount;
+  private List<ExtAccountStore> mappedPhysicalAccounts = new ArrayList<ExtAccountStore>(0);
 
   // CONSTRUCTORS ---------------------------------------------------
 
@@ -55,10 +61,10 @@ public class VirtualAccount implements Cloneable
   {
     final int prime = 31;
     int result = 1;
-    result = prime * result + (int) (amount ^ (amount >>> 32));
     result = prime * result + (int) (budget ^ (budget >>> 32));
     result = prime * result + ((description == null) ? 0 : description.hashCode());
     result = prime * result + (int) (id ^ (id >>> 32));
+    result = prime * result + ((mappedPhysicalAccounts == null) ? 0 : mappedPhysicalAccounts.hashCode());
     result = prime * result + ((name == null) ? 0 : name.hashCode());
     return result;
   }
@@ -73,8 +79,6 @@ public class VirtualAccount implements Cloneable
     if (getClass() != obj.getClass())
       return false;
     VirtualAccount other = (VirtualAccount) obj;
-    if (amount != other.amount)
-      return false;
     if (budget != other.budget)
       return false;
     if (description == null)
@@ -85,6 +89,13 @@ public class VirtualAccount implements Cloneable
     else if (!description.equals(other.description))
       return false;
     if (id != other.id)
+      return false;
+    if (mappedPhysicalAccounts == null)
+    {
+      if (other.mappedPhysicalAccounts != null)
+        return false;
+    }
+    else if (!mappedPhysicalAccounts.equals(other.mappedPhysicalAccounts))
       return false;
     if (name == null)
     {
@@ -133,14 +144,20 @@ public class VirtualAccount implements Cloneable
     this.description = description;
   }
 
+  @JsonProperty
   public long getAmount()
   {
+    long amount = 0;
+    for (ExtAccountStore va : mappedPhysicalAccounts)
+    {
+      amount += va.getAmount();
+    }
     return amount;
   }
 
+  @JsonIgnore
   public void setAmount(long amount)
   {
-    this.amount = amount;
   }
 
   public long getBudget()
@@ -151,6 +168,16 @@ public class VirtualAccount implements Cloneable
   public void setBudget(long budget)
   {
     this.budget = budget;
+  }
+
+  public List<ExtAccountStore> getMappedPhysicalAccounts()
+  {
+    return mappedPhysicalAccounts;
+  }
+
+  public void setMappedPhysicalAccounts(List<ExtAccountStore> mappedPhysicalAccounts)
+  {
+    this.mappedPhysicalAccounts = mappedPhysicalAccounts;
   }
 
 }

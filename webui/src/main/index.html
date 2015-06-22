@@ -7,9 +7,6 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<!-- build:css styles/vendor.css -->
 		<!-- bower:css -->
-		<link rel="stylesheet" href="../../bower_components/mobile-angular-ui/dist/css/mobile-angular-ui-hover.css" />
-		<link rel="stylesheet" href="../../bower_components/mobile-angular-ui/dist/css/mobile-angular-ui-base.css" />
-		<link rel="stylesheet" href="../../bower_components/mobile-angular-ui/dist/css/mobile-angular-ui-desktop.css" />
 		<link rel="stylesheet" href="../../bower_components/jquery-mobile-bower/css/jquery.mobile-1.4.5.css" />
 		<!-- endbower -->
 		<!-- endbuild -->
@@ -20,70 +17,60 @@
 
 	</head>
 	<body data-ng-app="myFinance">
-		<!-- Sidebars -->
-		<div class="sidebar sidebar-left">
-			<div class="scrollable">
-				<h1 class="scrollable-header app-name">菜单</h1>
-				<div class="scrollable-content">
-					<div class="list-group" ui-turn-off='uiSidebarLeft'>
-						<a class="list-group-item ui-corner-all ui-btn-icon-right ui-icon-carat-r" href="#/" id="bar-home">我的首页 </a>
-						<a class="list-group-item ui-corner-all ui-btn-icon-right ui-icon-carat-r" href="#/manage-records" id="bar-add-record">账单管理</a>
-						<a class="list-group-item ui-corner-all ui-btn-icon-right ui-icon-carat-r" href="#/manage-accounts" id="bar-account-details">账户管理</a>
-						<a class="list-group-item ui-corner-all ui-btn-icon-right ui-icon-carat-r" href="#/manage-reports">我的财务报表</a>
-					</div>
-				</div>
-			</div>
-		</div><!--
 
-		<div class="sidebar sidebar-right">
+		<div data-role="page" class="ui-responsive-panel">
+			<div data-role="header" data-position="fixed" >
+				<h1>我的财务管家</h1>
 
-		</div>-->
+				<a data-iconpos="notext" data-icon="bars" href="#leftbar" id="link_menu"></a>
 
-		<div class="app">
-			<div class="navbar navbar-app navbar-absolute-top">
-				<!-- Top Navbar -->
-				<div class="navbar-brand navbar-brand-center">
-					我的财务管家
-				</div>
-				<div class="btn-group pull-left">
-					<div class="btn sidebar-toggle" ui-toggle="uiSidebarLeft">
-						<div class="ui-btn ui-corner-all ui-btn-icon-notext ui-btn-inline ui-icon-bars">
-							菜单
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="navbar navbar-app navbar-absolute-bottom">
-				<!-- Bottom Navbar -->
-			</div>
+				<a data-iconpos="notext" data-icon="gear" href="#add-form"></a>
+			</div><!-- /header -->
+			<div role="main" class="ui-content" >
+				<div class="scrollable-content slide-animate" ng-view jqm></div>
+			</div><!-- /content -->
+			<div data-role="footer" data-position="fixed" >
+				<h4>Page Footer</h4>
+			</div><!-- /footer -->
 
-			<!-- App body -->
+			<div data-role="panel" id="leftbar" data-position="left" data-position-fixed="true" data-display="push">
+				<a href="#/" id="bar-home" class="ui-btn ui-icon-carat-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon ui-corner-all">我的首页</a>
+				<a href="#/manage-records" id="bar-add-record" class="ui-btn ui-icon-carat-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon ui-corner-all">账单管理</a>
+				<a href="#/manage-accounts" id="bar-account-details" class="ui-btn ui-icon-carat-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon ui-corner-all">账户管理</a>
+				<a href="#/manage-reports" class="ui-btn ui-icon-carat-r ui-btn-icon-right ui-nodisc-icon ui-alt-icon ui-corner-all">我的财务报表</a>
+				<!--
+				<ul data-role="listview" data-inset="true" class="ui-nodisc-icon ui-alt-icon">
+									<li>
+										<a href="#/" id="bar-home" >鎴戠殑棣栭〉 </a>
+									</li>
+									<li>
+										<a href="#/manage-records" id="bar-add-record">璐﹀崟绠＄悊</a>
+									</li>
+									<li>
+										<a href="#/manage-accounts" id="bar-account-details">璐︽埛绠＄悊</a>
+									</li>
+									<li>
+										<a href="#/manage-reports">鎴戠殑璐㈠姟鎶ヨ〃</a>
+									</li>
+								</ul>-->
+				
+			</div><!-- /panel -->
+		</div><!-- page -->
 
-			<div class='app-body'>
-				<div class='app-content'>
-					<div class="scrollable-content slide-animate" ng-view></div>
-				</div>
-			</div>
-		</div><!-- ~ .app -->
-
-		<!-- Modals and Overlays -->
-		<div ui-yield-to="modals"></div>
 		<!-- build:js scripts/vendor.js -->
 		<!-- bower:js -->
 		<script src="../../bower_components/jquery/jquery.js"></script>
+		<script src="../../bower_components/jquery-mobile-bower/js/jquery.mobile-1.4.5.min.js"></script>
 		<script src="../../bower_components/angular/angular.js"></script>
-		<script src="../../bower_components/mobile-angular-ui/dist/js/mobile-angular-ui.min.js"></script>
 		<script src="../../bower_components/angular-route/angular-route.js"></script>
 		<script src="../../bower_components/angular-animate/angular-animate.js"></script>
 		<!-- endbower -->
 		<!-- endbuild -->
 		<!-- build:js scripts/scripts.js -->
 		<script src="scripts/app.js"></script>
-<!--
+		<!--
 
 		<script src="scripts/app.config.js"></script>-->
-
-		
 
 		<script src="scripts/services/rest.service.js"></script>
 
@@ -91,6 +78,7 @@
 		<script src="scripts/controllers/addRecordCtrl.js"></script>
 		<script src="scripts/controllers/physicalAccountCtrl.js"></script>
 		<script src="scripts/controllers/virtualAccountCtrl.js"></script>
+		<script src="scripts/controllers/divideMoneyCtrl.js"></script>
 
 		<!-- endbuild -->
 

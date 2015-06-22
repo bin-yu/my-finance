@@ -4,7 +4,6 @@ angular.module('myFinance').controller('PhysicalAccountCtrl', ['$scope', '$log',
 function($scope, $log, RestService) {
 	$scope.physicalAccountList = [];
 	$scope.reloadAccountList = function() {
-		$scope.physicalAccountList.slice(0,$scope.physicalAccountList.length);
 		var result = {
 			setData : function(data, headers) {
 				$scope.physicalAccountList = data;
