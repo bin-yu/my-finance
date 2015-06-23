@@ -58,6 +58,13 @@ public class ExtAccountStore
   }
 
   @Override
+  public String toString()
+  {
+    return "ExtAccountStore [physicalAccountId=" + physicalAccountId + ", physicalAccountName=" + physicalAccountName
+        + ", virtualAccountId=" + virtualAccountId + ", virtualAccountName=" + virtualAccountName + ", amount=" + amount + "]";
+  }
+
+  @Override
   public int hashCode()
   {
     final int prime = 31;

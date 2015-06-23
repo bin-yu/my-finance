@@ -57,6 +57,13 @@ public class VirtualAccount implements Cloneable
   // ACCESSOR METHODS -----------------------------------------------
 
   @Override
+  public String toString()
+  {
+    return "VirtualAccount [id=" + id + ", name=" + name + ", description=" + description + ", budget=" + budget
+        + ", mappedPhysicalAccounts=" + mappedPhysicalAccounts + "]";
+  }
+
+  @Override
   public int hashCode()
   {
     final int prime = 31;

@@ -74,6 +74,13 @@ public class TransactionSearchFilter
 
   // ACCESSOR METHODS -----------------------------------------------
 
+  @Override
+  public String toString()
+  {
+    return "TransactionSearchFilter [fromDate=" + fromDate + ", toDate=" + toDate + ", sortOrder=" + sortOrder + ", offset="
+        + offset + ", limit=" + limit + "]";
+  }
+
   public Date getFromDate()
   {
     return fromDate;

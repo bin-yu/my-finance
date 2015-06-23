@@ -102,6 +102,14 @@ public class AccountTransaction implements Cloneable
   }
 
   @Override
+  public String toString()
+  {
+    return "AccountTransaction [id=" + id + ", date=" + date + ", type=" + type + ", fromPhysicalAccountId="
+        + fromPhysicalAccountId + ", fromVirtualAccountId=" + fromVirtualAccountId + ", toPhysicalAccountId=" + toPhysicalAccountId
+        + ", toVirtualAccountId=" + toVirtualAccountId + ", amount=" + amount + ", description=" + description + "]";
+  }
+
+  @Override
   public int hashCode()
   {
     final int prime = 31;

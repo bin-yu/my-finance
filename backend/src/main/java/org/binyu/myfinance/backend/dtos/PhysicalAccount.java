@@ -62,6 +62,13 @@ public class PhysicalAccount implements Cloneable
   }
 
   @Override
+  public String toString()
+  {
+    return "PhysicalAccount [id=" + id + ", name=" + name + ", description=" + description + ", mappedVirtualAccounts="
+        + mappedVirtualAccounts + "]";
+  }
+
+  @Override
   public int hashCode()
   {
     final int prime = 31;

@@ -48,6 +48,13 @@ public class AccountStore
   // PUBLIC METHODS -------------------------------------------------
 
   @Override
+  public String toString()
+  {
+    return "AccountStore [physicalAccountId=" + physicalAccountId + ", virtualAccountId=" + virtualAccountId + ", amount=" + amount
+        + "]";
+  }
+
+  @Override
   public int hashCode()
   {
     final int prime = 31;
