@@ -16,6 +16,7 @@
     "angular": "~1.4.1",
     "angular-route": "~1.4.1",
     "angular-animate": "~1.4.1",
-    "jquery-mobile-bower": "~1.4.5"
+    "jquery-mobile-bower": "~1.4.5",
+    "angular-jqm": "*"
   }
 }

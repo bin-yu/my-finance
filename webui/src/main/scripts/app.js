@@ -70,56 +70,37 @@ myApp.constant('HostConfig', {
 //use this directive to allow jquery mobile to render subviews
 myApp.directive('jqm', function($timeout) {
   return {
-    link: function(scope, elm, attr) {
-        //$timeout(function(){
-            elm.trigger('create');
-        //});
-    }
+  	priority: 300,
+    link: function (s, elm, a) {
+            	//$timeout(function(){
+            		elm.parent().trigger('create');
+            	//},1000);
+            	}
   };
 });
 
-myApp.directive('jslider', function () {
-    return {
-        scope: {
-            id: '@sliderid',
-            label: '@',
-            allocated: '=allocated',
-            min: '@',
-            max: '@',
-            step: '@',
-            disabled: '@',
-            mini: '@',
-            highlight: '@',
-            start: '&',
-            stop: '&'
-        },
-        restrict: 'E',
-        replace: false,
-        templateUrl: 'templates/jslider.html',
-        compile: function (e) {
-            e.trigger('create');
-            return {
-                post: function (s, e, a) {
-                    e.find('a').click(function (e) {
-                        return e.preventDefault();
-                    });
 
-                    e.find('div.ui-slider').find('input[type="range"]').on('slidestop', function () {
-                        return s.stop();
-                    });
 
-                    e.find('div.ui-slider').find('input[type="range"]').on('slidestart', function () {
-                        return s.start();
-                    });
-                    e.find('div.ui-slider').find('input[type="number"]').change(function () {
-                        return s.stop();
-                    });
 
-                    s.$watch('allocated', function () {
-                        return e.find('#' + a.id).slider('refresh');
-                    });
-                }
-            };
-        }
-    };
-});
+myApp.directive('compile', function($compile) {
+      // directive factory creates a link function
+      return function(scope, element, attrs) {
+        scope.$watch(
+          function(scope) {
+             // watch the 'compile' expression for changes
+            return scope.$eval(attrs.compile);
+          },
+          function(value) {
+            // when the 'compile' expression changes
+            // assign it into the current DOM
+            element.html(value);
+
+            // compile the new DOM and link it to the current
+            // scope.
+            // NOTE: we only compile .childNodes so that
+            // we don't get into infinite loop compiling ourselves
+            //$compile(element.contents())(scope);
+          }
+        );
+      };
+    });

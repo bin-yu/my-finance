@@ -1,0 +1,9 @@
+<div >
+	<label for="email">E-mail</label>
+	<div class="controls">
+		<input type="email" id="email" name="email" ng-model="user.email" required>
+
+		<span ng-repeat="error in $fieldErrors"> {{$validationMessages[error](this)}} </span>
+
+	</div>
+</div>
