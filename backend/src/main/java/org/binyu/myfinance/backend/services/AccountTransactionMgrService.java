@@ -20,10 +20,13 @@ import org.binyu.myfinance.backend.daos.PhysicalAccountMapper;
 import org.binyu.myfinance.backend.daos.VirtualAccountMapper;
 import org.binyu.myfinance.backend.dtos.AccountStore;
 import org.binyu.myfinance.backend.dtos.AccountTransaction;
+import org.binyu.myfinance.backend.dtos.PhysicalAccount;
 import org.binyu.myfinance.backend.dtos.TransactionSearchFilter;
+import org.binyu.myfinance.backend.dtos.VirtualAccount;
 import org.binyu.myfinance.backend.exceptions.InvalidInputException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -59,26 +62,9 @@ public class AccountTransactionMgrService
     {
       throw new InvalidInputException("The transaction amount must be greater than zero!");
     }
-    boolean hasFrom = false;
-    boolean hasTo = false;
-    if (transactionToDo.getFromPhysicalAccountId() >= 0 && transactionToDo.getFromVirtualAccountId() >= 0)
-    {
-      if ((pAccountRepo.getPhysicalAccountById(transactionToDo.getFromPhysicalAccountId()) == null) ||
-          (vAccountRepo.getVirtualAccountById(transactionToDo.getFromVirtualAccountId()) == null))
-      {
-        throw new InvalidInputException("The from account does not exist!");
-      }
-      hasFrom = true;
-    }
-    if (transactionToDo.getToPhysicalAccountId() >= 0 && transactionToDo.getToVirtualAccountId() >= 0)
-    {
-      if ((pAccountRepo.getPhysicalAccountById(transactionToDo.getToPhysicalAccountId()) == null) ||
-          (vAccountRepo.getVirtualAccountById(transactionToDo.getToVirtualAccountId()) == null))
-      {
-        throw new InvalidInputException("The to account does not exist!");
-      }
-      hasTo = true;
-    }
+    boolean hasFrom = validateAccount(transactionToDo.getFromPhysicalAccountId(), transactionToDo.getFromVirtualAccountId());
+    boolean hasTo = validateAccount(transactionToDo.getToPhysicalAccountId(), transactionToDo.getToVirtualAccountId());
+
     // do transactions
     if (hasFrom)
     {
@@ -93,6 +79,37 @@ public class AccountTransactionMgrService
     // add audit record
     auditRepo.addRecord(transactionToDo);
     return transactionToDo;
+  }
+
+  private boolean validateAccount(long physicalAccountId, long virtualAccountId) throws InvalidInputException
+  {
+    boolean has = false;
+    if (physicalAccountId != PhysicalAccount.NO_ACCOUNT
+        && virtualAccountId != VirtualAccount.NO_ACCOUNT)
+    {
+      if ((pAccountRepo.getPhysicalAccountById(physicalAccountId) == null) ||
+          (vAccountRepo.getVirtualAccountById(virtualAccountId) == null))
+      {
+        throw new InvalidInputException("The from account does not exist!");
+      }
+      has = true;
+    }
+    return has;
+  }
+
+  public List<AccountTransaction> searchAudits(TransactionSearchFilter filter)
+  {
+    return auditRepo.searchRecords(filter, new RowBounds(filter.getOffset(), filter.getLimit()));
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
+  public AccountTransaction[] newTransactions(AccountTransaction[] transactionsToDo) throws InvalidInputException
+  {
+    for (AccountTransaction transaction : transactionsToDo)
+    {
+      newTransaction(transaction);
+    }
+    return transactionsToDo;
   }
 
   // PROTECTED METHODS ----------------------------------------------
@@ -115,10 +132,5 @@ public class AccountTransactionMgrService
   }
 
   // ACCESSOR METHODS -----------------------------------------------
-
-  public List<AccountTransaction> searchAudits(TransactionSearchFilter filter)
-  {
-    return auditRepo.searchRecords(filter, new RowBounds(filter.getOffset(), filter.getLimit()));
-  }
 
 }

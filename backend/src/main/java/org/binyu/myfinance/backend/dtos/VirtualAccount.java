@@ -26,6 +26,7 @@ public class VirtualAccount implements Cloneable
 
   // CONSTANTS ------------------------------------------------------
   public static final long UNALLOCATED_ACCOUNT_ID = -1;
+  public static final long NO_ACCOUNT = -99;
   // CLASS VARIABLES ------------------------------------------------
 
   // INSTANCE VARIABLES ---------------------------------------------

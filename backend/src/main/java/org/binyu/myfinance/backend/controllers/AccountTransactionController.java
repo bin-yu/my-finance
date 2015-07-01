@@ -53,6 +53,14 @@ public class AccountTransactionController
     return actualTransaction;
   }
 
+  @RequestMapping(value = "/batch", method = RequestMethod.POST)
+  public AccountTransaction[] batchApplyTransactions(@RequestBody AccountTransaction[] transactionsToDo)
+      throws InvalidInputException
+  {
+    AccountTransaction[] actualTransaction = service.newTransactions(transactionsToDo);
+    return actualTransaction;
+  }
+
   @RequestMapping(method = RequestMethod.GET)
   public List<AccountTransaction> searchTransactions(TransactionSearchFilter filter) throws InvalidInputException
   {

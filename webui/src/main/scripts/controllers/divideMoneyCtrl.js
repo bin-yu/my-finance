@@ -2,79 +2,123 @@
 
 angular.module('myFinance').controller('DivideMoneyCtrl', ['$scope', '$log', 'RestService',
 function($scope, $log, RestService) {
-	$scope.physicalAccountList = [{
-		id : 1,
-		name : 'cash',
-		mappedVirtualAccounts : [
-			{
-				virtualAccountId : -1,
-				virtualAccountName : 'unallocated',
-				amount: 999
-			},
-			{
-				virtualAccountId : 1,
-				virtualAccountName : 'normal',
-				amount: 20
-			}
-		]
-	},
-	{
-		id : 2,
-		name : 'other'
-	}];
-	$scope.virtualAccountList=[
-		{
-			id : 2,
-			name : '日常开销账户',
-			budget : 10,
-		},
-		{
-			id : 3,
-			name : '养猪账户',
-			budget : 100,
-		},
-	];
-	for(var i=0;i<$scope.virtualAccountList.length;i++){
-		$scope.virtualAccountList[i].allocated=$scope.virtualAccountList[i].budget;
-	}
 
-	$scope.reloadAccountList = function() {
-		var result = {
-			setData : function(data, headers) {
-				$scope.physicalAccountList = data;
-			},
-			setError : function(status, errorData) {
-				$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
-			}
-		};
-		RestService.doGet('physicalAccounts', result);
-	};
-	$scope.reloadAccountList();
-	$scope.allocating={
-		targetPhysicalAccount : $scope.physicalAccountList[0],
-		fromVirtualAccount : function(){
-			if(this.targetPhysicalAccount && this.targetPhysicalAccount.mappedVirtualAccounts){
-				var vaList=this.targetPhysicalAccount.mappedVirtualAccounts;
+	$scope.allocating = {
+		//refresh target virtual account
+		refreshFromVirtualAccount : function() {
+			if (this.targetPhysicalAccount && this.targetPhysicalAccount.mappedVirtualAccounts) {
+				var vaList = this.targetPhysicalAccount.mappedVirtualAccounts;
 				var i;
-				for(i=0;i<vaList.length;i++){
-					if(vaList[i].virtualAccountId === -1){
-						return vaList[i];
+				for ( i = 0; i < vaList.length; i++) {
+					if (vaList[i].virtualAccountId === -1) {
+						this.targetVa = vaList[i];
+						this.totalUnallocate = this.targetVa.amount;
+						return;
 					}
 				}
 			}
-			return null;
+			this.targetVa = null;
+			this.totalUnallocate = 0;
 		},
-		remain : function(){
-			var fromVa=this.fromVirtualAccount();
-			if(fromVa===null){
-				return 0;
+		onTargetAccountChange : function() {
+			this.refreshFromVirtualAccount();
+			this.refreshAllocated();
+		},
+		//refresh allocated for all virtual accounts;
+		refreshAllocated : function() {
+			if (this.virtualAccountList) {
+				var total = this.totalUnallocate;
+				for (var i = 0; i < this.virtualAccountList.length; i++) {
+					this.virtualAccountList[i].allocated = this.virtualAccountList[i].budget > total ? total : this.virtualAccountList[i].budget;
+				}
 			}
-			return fromVa.amount;
+		},
+		remain : function() {
+			var remaining = this.totalUnallocate;
+			if (this.virtualAccountList) {
+				for (var i = 0; i < this.virtualAccountList.length; i++) {
+					remaining -= this.virtualAccountList[i].allocated;
+				}
+			}
+			return remaining;
+		},
+		setTargetPhysicalAccount : function(account) {
+			this.targetPhysicalAccount = account;
+		},
+		initVirtualAccountList : function(list) {
+			this.virtualAccountList = [];
+			//remove unallocated account from the list
+			for (var i = 0; i < list.length; i++) {
+				if(list[i].id!=-1){
+					this.virtualAccountList.push(list[i]);
+				}
+			}
+			this.refreshAllocated();
+		},
+		execute : function() {
+			if (this.targetVa && this.virtualAccountList) {
+				var transactionList = [];
+				var now=new Date().toUTCString();
+				for (var i = 0; i < this.virtualAccountList.length; i++) {
+					transactionList.push({
+						date : now,
+						type : 'TRANSFER',
+						fromPhysicalAccountId : this.targetPhysicalAccount.id,
+						fromVirtualAccountId : this.targetVa.virtualAccountId,
+						toPhysicalAccountId : this.targetPhysicalAccount.id,
+						toVirtualAccountId : this.virtualAccountList[i].id,
+						amount : this.virtualAccountList[i].allocated,
+						description : '分赃'
+					});
+				}
+				var result = {
+					setData : function(data, headers) {
+						alert('success');
+					},
+					setError : function(status, errorData) {
+						$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
+						alert('failed:status=' + status);
+					}
+				};
+				RestService.doPost('doBatchTransaction', result, {
+					data : transactionList
+				});
+			}
 		}
 	};
+	//refresh from-virtual-account whenever the target physical account changed
+	$scope.$watch('allocating.targetPhysicalAccount', function(newValue, oldValue) {
+		if (oldValue != newValue) {
+			$scope.allocating.onTargetAccountChange();
+		}
+	});
 
-	$scope.value=20;
+	//load physicalAccountList
+	var result = {
+		setData : function(data, headers) {
+			$scope.physicalAccountList = data;
+			if ($scope.physicalAccountList.length > 0) {
+				$scope.allocating.setTargetPhysicalAccount($scope.physicalAccountList[0]);
+			}
+		},
+		setError : function(status, errorData) {
+			$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
+		}
+	};
+	RestService.doGet('physicalAccounts', result);
+
+	//load virtualAccountList
+	var result = {
+		setData : function(data, headers) {
+			$scope.allocating.initVirtualAccountList(data);
+		},
+		setError : function(status, errorData) {
+			$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
+		}
+	};
+	RestService.doGet('virtualAccounts', result);
+
 	$scope.doDivide = function() {
-		alert("target=" + $scope.targetPhysicalAccount.name);
+		$scope.allocating.execute();
 	};
 }]);

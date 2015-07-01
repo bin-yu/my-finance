@@ -25,7 +25,7 @@ public class PhysicalAccount implements Cloneable
 {
 
   // CONSTANTS ------------------------------------------------------
-
+  public static final long NO_ACCOUNT = -99;
   // CLASS VARIABLES ------------------------------------------------
 
   // INSTANCE VARIABLES ---------------------------------------------

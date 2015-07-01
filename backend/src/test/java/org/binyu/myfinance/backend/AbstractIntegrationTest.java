@@ -11,6 +11,9 @@
 // PACKAGE/IMPORTS --------------------------------------------------
 package org.binyu.myfinance.backend;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,12 +25,18 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.web.context.WebApplicationContext;
 import org.testng.annotations.BeforeClass;
 
@@ -48,6 +57,8 @@ public abstract class AbstractIntegrationTest extends AbstractTransactionalTestN
 
   @Autowired
   private WebApplicationContext wac;
+  @Autowired
+  public PlatformTransactionManager txManager;
   protected MockMvc mockMvc;
 
   protected ObjectMapper mapper = new ObjectMapper();
@@ -78,7 +89,33 @@ public abstract class AbstractIntegrationTest extends AbstractTransactionalTestN
   {
     return mapper.readValue(result.getResponse().getContentAsByteArray(), typeReference);
   }
+
   // PRIVATE METHODS ------------------------------------------------
+
+  protected void postMvcRequestInNestTransaction(String urlPath, Object requestBody) throws Exception, JsonProcessingException
+  {
+    DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+    // explicitly setting the transaction name is something that can only be done programmatically
+    def.setName("SomeTxName");
+    def.setPropagationBehavior(TransactionDefinition.PROPAGATION_NESTED);
+    TransactionStatus status = txManager.getTransaction(def);
+    this.mockMvc
+        .perform(
+            post(urlPath)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serialize(requestBody))
+                .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isBadRequest());
+    if (status.isRollbackOnly())
+    {
+      txManager.rollback(status);
+    }
+    else
+    {
+      txManager.commit(status);
+    }
+  }
 
   // ACCESSOR METHODS -----------------------------------------------
 

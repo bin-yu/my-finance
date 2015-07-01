@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.binyu.myfinance.backend.AbstractIntegrationTest;
+import org.binyu.myfinance.backend.RootConfiguration;
 import org.binyu.myfinance.backend.daos.AccountAuditMapper;
 import org.binyu.myfinance.backend.daos.AccountStoreMapper;
 import org.binyu.myfinance.backend.dtos.AccountStore;
@@ -38,6 +39,7 @@ import org.binyu.myfinance.backend.dtos.TransactionSearchFilter.SortOrder;
 import org.binyu.myfinance.backend.dtos.VirtualAccount;
 import org.binyu.myfinance.backend.utils.AccountTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -52,6 +54,7 @@ import org.testng.annotations.Test;
  * TODO: Update with a detailed description of the interface/class.
  * 
  */
+@SpringApplicationConfiguration(classes = { RootConfiguration.class, AccountTransactionControllerTest.class })
 public class AccountTransactionControllerTest extends AbstractIntegrationTest
 {
   // CONSTANTS ------------------------------------------------------
@@ -91,20 +94,16 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
     AccountTestUtils.deleteVirtualAccount(jdbcTemplate, toVAccount);
   }
 
-  @Test
-  public void testNewTransactionWithValidInput() throws Exception
+  @Test(dataProvider = "testNewTransactionWithValidInputData")
+  public void testNewTransactionWithValidInput(AccountTransaction transactionToDo) throws Exception
   {
     // prepare the accounts related
     long fromAmount = 1000;
     AccountTestUtils.initAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId(), fromAmount);
-    AccountStore dbStore = actStoreMapper.getStore(fromPAccount.getId(), fromVAccount.getId());
+    AccountStore dbStore = AccountTestUtils.getAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId());
     Assert.assertEquals(dbStore.getAmount(), fromAmount);
     // prepare other data
     int amountToTransfer = 100;
-    AccountTransaction transactionToDo = new AccountTransaction(0, new Date(), TransactionType.TRANSFER
-        , fromPAccount.getId(), fromVAccount.getId()
-        , toPAccount.getId(), toVAccount.getId()
-        , amountToTransfer, "desc");
 
     MvcResult result = this.mockMvc
         .perform(
@@ -117,16 +116,115 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
         .andExpect(content().contentType("application/json;charset=UTF-8"))
         .andReturn();
     // verify the transaction happens in db
-    dbStore = actStoreMapper.getStore(fromPAccount.getId(), fromVAccount.getId());
-    Assert.assertEquals(dbStore.getAmount(), fromAmount - amountToTransfer);
-    dbStore = actStoreMapper.getStore(toPAccount.getId(), toVAccount.getId());
-    Assert.assertEquals(dbStore.getAmount(), amountToTransfer);
+    if (transactionToDo.getFromPhysicalAccountId() != PhysicalAccount.NO_ACCOUNT)
+    {
+      dbStore = actStoreMapper.getStore(fromPAccount.getId(), fromVAccount.getId());
+      Assert.assertEquals(dbStore.getAmount(), fromAmount - amountToTransfer);
+    }
+    if (transactionToDo.getToPhysicalAccountId() != PhysicalAccount.NO_ACCOUNT)
+    {
+      dbStore = actStoreMapper.getStore(toPAccount.getId(), toVAccount.getId());
+      Assert.assertEquals(dbStore.getAmount(), amountToTransfer);
+    }
     // verify the audit record in db
     AccountTransaction rtTrans = deserialize(result, AccountTransaction.class);
     AccountTransaction dbTrans = auditRepo.getRecord(rtTrans.getId());
     transactionToDo.setId(rtTrans.getId());
     Assert.assertEquals(rtTrans, transactionToDo);
     Assert.assertEquals(dbTrans, transactionToDo);
+  }
+
+  @Test(dataProvider = "testNewTransactionWithInvalidInputData")
+  public void testNewTransactionWithInvalidInput(AccountTransaction transactionToDo) throws Exception
+  {
+    // prepare the accounts related
+    long fromAmount = 1000;
+    AccountTestUtils.initAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId(), fromAmount);
+    AccountStore dbStore = AccountTestUtils.getAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId());
+    Assert.assertEquals(dbStore.getAmount(), fromAmount);
+
+    postMvcRequestInNestTransaction("/account_transactions", transactionToDo);
+    // verify the transaction does not happen in db
+    dbStore = AccountTestUtils.getAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId());
+    Assert.assertEquals(dbStore.getAmount(), fromAmount);
+    dbStore = AccountTestUtils.getAccountStore(jdbcTemplate, toPAccount.getId(), toVAccount.getId());
+    Assert.assertNull(dbStore);
+  }
+
+  @Test
+  public void testBatchApplyTransactionsWithValidInput() throws Exception
+  {
+    // prepare the accounts related
+    long fromAmount = 1000;
+    AccountTestUtils.initAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId(), fromAmount);
+    AccountStore dbStore = actStoreMapper.getStore(fromPAccount.getId(), fromVAccount.getId());
+    Assert.assertEquals(dbStore.getAmount(), fromAmount);
+    // prepare other data
+    int amountToTransfer1 = 100, amountToTransfer2 = 99;
+    AccountTransaction[] transactionsToDo = new AccountTransaction[2];
+    transactionsToDo[0] = new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+        , fromPAccount.getId(), fromVAccount.getId()
+        , toPAccount.getId(), toVAccount.getId()
+        , amountToTransfer1, "desc");
+    transactionsToDo[1] = new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+        , fromPAccount.getId(), fromVAccount.getId()
+        , toPAccount.getId(), toVAccount.getId()
+        , amountToTransfer2, "desc");
+
+    MvcResult result = this.mockMvc
+        .perform(
+            post("/account_transactions/batch")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(serialize(transactionsToDo))
+                .accept(MediaType.parseMediaType("application/json;charset=UTF-8")))
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk())
+        .andExpect(content().contentType("application/json;charset=UTF-8"))
+        .andReturn();
+    // verify the transaction happens in db
+    dbStore = actStoreMapper.getStore(fromPAccount.getId(), fromVAccount.getId());
+    Assert.assertEquals(dbStore.getAmount(), fromAmount - amountToTransfer1 - amountToTransfer2);
+    dbStore = actStoreMapper.getStore(toPAccount.getId(), toVAccount.getId());
+    Assert.assertEquals(dbStore.getAmount(), amountToTransfer1 + amountToTransfer2);
+    // verify the audit record in db
+    AccountTransaction[] rtTrans = deserialize(result, AccountTransaction[].class);
+    Assert.assertEquals(rtTrans.length, 2);
+    for (int i = 0; i < transactionsToDo.length; i++)
+    {
+      transactionsToDo[i].setId(rtTrans[i].getId());
+      Assert.assertEquals(rtTrans[i], transactionsToDo[i]);
+      AccountTransaction dbTrans = auditRepo.getRecord(rtTrans[i].getId());
+      Assert.assertEquals(dbTrans, transactionsToDo[i]);
+    }
+  }
+
+  @Test
+  public void testBatchApplyTransactionsWithOneInValidTrans() throws Exception
+  {
+    // prepare the accounts related
+    long fromAmount = 1000;
+    AccountTestUtils.initAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId(), fromAmount);
+    AccountStore dbStore = AccountTestUtils.getAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId());
+    Assert.assertEquals(dbStore.getAmount(), fromAmount);
+    // prepare other data
+    int amountToTransfer1 = 100, amountToTransfer2 = 99;
+    AccountTransaction[] transactionsToDo = new AccountTransaction[2];
+    transactionsToDo[0] = new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+        , fromPAccount.getId(), fromVAccount.getId()
+        , toPAccount.getId(), toVAccount.getId()
+        , amountToTransfer1, "desc");
+    // the second one is an invalid transaction
+    transactionsToDo[1] = new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+        , -2, fromVAccount.getId()
+        , toPAccount.getId(), toVAccount.getId()
+        , amountToTransfer2, "desc");
+
+    postMvcRequestInNestTransaction("/account_transactions/batch", transactionsToDo);
+    // verify the transaction does not happen in db
+    dbStore = AccountTestUtils.getAccountStore(jdbcTemplate, fromPAccount.getId(), fromVAccount.getId());
+    Assert.assertEquals(dbStore.getAmount(), fromAmount);
+    dbStore = AccountTestUtils.getAccountStore(jdbcTemplate, toPAccount.getId(), toVAccount.getId());
+    Assert.assertNull(dbStore);
   }
 
   @Test(dataProvider = "testSearchTransactionsData")
@@ -226,8 +324,61 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
       { new TransactionSearchFilter(oneMonthAgo.getTime(), null), oneMonthList }
     };
   }
-  // PRIVATE METHODS ------------------------------------------------
 
+  // PRIVATE METHODS ------------------------------------------------
+  @DataProvider(name = "testNewTransactionWithValidInputData")
+  private Object[][] testNewTransactionWithValidInputData()
+  {
+    return new Object[][] {
+      // transfer money
+      { new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+          , fromPAccount.getId(), fromVAccount.getId()
+          , toPAccount.getId(), toVAccount.getId()
+          , 100, "desc") },
+      // income
+      { new AccountTransaction(0, new Date(), TransactionType.INCOME
+          , PhysicalAccount.NO_ACCOUNT, VirtualAccount.NO_ACCOUNT
+          , toPAccount.getId(), toVAccount.getId()
+          , 100, "desc") },
+      // expense
+      { new AccountTransaction(0, new Date(), TransactionType.EXPENSE
+          , fromPAccount.getId(), fromVAccount.getId()
+          , PhysicalAccount.NO_ACCOUNT, VirtualAccount.NO_ACCOUNT
+          , 100, "desc") },
+    };
+  }
+
+  @DataProvider(name = "testNewTransactionWithInvalidInputData")
+  private Object[][] testNewTransactionWithInvalidInputData()
+  {
+    return new Object[][] {
+      // invalid from physical account id
+      { new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+          , -2, fromVAccount.getId()
+          , toPAccount.getId(), toVAccount.getId()
+          , 100, "desc") },
+      // invalid to physical account id
+      { new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+          , fromPAccount.getId(), fromVAccount.getId()
+          , -2, toVAccount.getId()
+          , 100, "desc") },
+      // invalid from virtual account id
+      { new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+          , fromPAccount.getId(), -2
+          , toPAccount.getId(), toVAccount.getId()
+          , 100, "desc") },
+      // invalid to virtual account id
+      { new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+          , fromPAccount.getId(), fromVAccount.getId()
+          , toPAccount.getId(), -2
+          , 100, "desc") },
+      // negative amount to transfer
+      { new AccountTransaction(0, new Date(), TransactionType.TRANSFER
+          , fromPAccount.getId(), fromVAccount.getId()
+          , toPAccount.getId(), toVAccount.getId()
+          , -100, "desc") }
+    };
+  }
   // ACCESSOR METHODS -----------------------------------------------
 
 }

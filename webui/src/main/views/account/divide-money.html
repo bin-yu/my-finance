@@ -1,38 +1,17 @@
 <form>
 	<div class="ui-field-contain">
 		<label for="target_physical_account">请选择用于划拨的物理账户：</label>
-		<select id="target_physical_account" data-ng-model="allocating.targetPhysicalAccount" data-ng-options="account.name for account in physicalAccountList" data-role="none" >
+		<select id="target_physical_account" data-ng-model="allocating.targetPhysicalAccount" data-ng-options="account as account.name for account in physicalAccountList track by account.id" data-role="none" >
 		</select>
 	</div>
 	<div class="ui-field-contain">
-		<label for="unallocated">未分配资金：</label>
-		<label id="unallocated" name="unallocated" >{{allocating.remain()}}</label>
-	</div><!--
-	
-		<div>
-			<field type="email" ng-model="user.email" required >
-				<label>Email</label>
-				<validator key="required">
-					{{$fieldLabel}} is required
-				</validator>
-				<validator key="email">
-					Please enter a valid email
-				</validator>
-			</field>
-		</div>-->
-	
-	
-	
-	<div data-ng-repeat="va in virtualAccountList" jqm>
-		
-		
-		<jslider data-ng-model="va.allocated" id="slider_{{va.id}}" min="0" max="100" label="{{va.name}} : "/>
-				
-		
-		<!--
-		
-				<div compile="'name:'+va.name"/>-->
-		
+		<label for="unallocated">未分配资金总额：</label>
+		<label id="unallocated" name="unallocated" >{{allocating.totalUnallocate}}</label>
+		<label for="unallocated">未分配资金余额：</label>
+				<label id="unallocated" name="unallocated" >{{allocating.remain()}}</label>
+	</div>
+	<div data-ng-repeat="va in allocating.virtualAccountList">
+		<jslider data-ng-model="va.allocated" id="slider_{{va.id}}" min="0" maxvar="allocating.totalUnallocate" label="{{va.name}} : "/>
 	</div>
 	<input type="submit" value="执行" data-ng-click="doDivide()"/>
 </form>

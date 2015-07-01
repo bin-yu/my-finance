@@ -20,8 +20,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.binyu.myfinance.backend.dtos.AccountStore;
 import org.binyu.myfinance.backend.dtos.PhysicalAccount;
 import org.binyu.myfinance.backend.dtos.VirtualAccount;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.testng.Assert;
@@ -46,6 +48,19 @@ public class AccountTestUtils
       account.setName(rs.getString("name"));
       account.setDescription(rs.getString("description"));
       account.setBudget(rs.getLong("budget"));
+      return account;
+    }
+  }
+
+  private static final class AccountStoreMapper implements RowMapper<AccountStore>
+  {
+    @Override
+    public AccountStore mapRow(ResultSet rs, int rowNum) throws SQLException
+    {
+      AccountStore account = new AccountStore();
+      account.setPhysicalAccountId(rs.getLong("physical_account_id"));
+      account.setVirtualAccountId(rs.getLong("virtual_account_id"));
+      account.setAmount(rs.getLong("amount"));
       return account;
     }
   }
@@ -149,6 +164,20 @@ public class AccountTestUtils
           physicalAccountId, virtualAccountId, amount },
         new int[] { Types.BIGINT, Types.BIGINT, Types.BIGINT });
     Assert.assertEquals(updateCnt, 1);
+  }
+
+  public static AccountStore getAccountStore(JdbcTemplate jdbcTemplate, long physicalAccountId, long virtualAccountId)
+  {
+    try
+    {
+      return jdbcTemplate.queryForObject("select * from account_stores where physical_account_id = ? and virtual_account_id = ? ",
+          new Object[] { physicalAccountId, virtualAccountId },
+          new AccountStoreMapper());
+    }
+    catch (EmptyResultDataAccessException e)
+    {
+      return null;
+    }
   }
 
   public static void deletePhysicalAccount(JdbcTemplate jdbcTemplate, PhysicalAccount account)
