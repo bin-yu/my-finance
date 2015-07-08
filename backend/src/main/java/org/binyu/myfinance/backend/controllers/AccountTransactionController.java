@@ -14,11 +14,10 @@ package org.binyu.myfinance.backend.controllers;
 import java.util.List;
 
 import org.binyu.myfinance.backend.dtos.AccountTransaction;
+import org.binyu.myfinance.backend.dtos.ExtAccountTransactionRecord;
 import org.binyu.myfinance.backend.dtos.TransactionSearchFilter;
 import org.binyu.myfinance.backend.exceptions.InvalidInputException;
 import org.binyu.myfinance.backend.services.AccountTransactionMgrService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +34,6 @@ public class AccountTransactionController
 {
   // CONSTANTS ------------------------------------------------------
 
-  private static final Logger LOG = LoggerFactory.getLogger(AccountTransactionController.class);
   // CLASS VARIABLES ------------------------------------------------
 
   // INSTANCE VARIABLES ---------------------------------------------
@@ -62,7 +60,7 @@ public class AccountTransactionController
   }
 
   @RequestMapping(method = RequestMethod.GET)
-  public List<AccountTransaction> searchTransactions(TransactionSearchFilter filter) throws InvalidInputException
+  public List<ExtAccountTransactionRecord> searchTransactions(TransactionSearchFilter filter) throws InvalidInputException
   {
     return service.searchAudits(filter);
   }

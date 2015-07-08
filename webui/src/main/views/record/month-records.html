@@ -1,0 +1,22 @@
+<table class="account-table">
+	<thead class="seperator">
+		<tr class="seperator">
+			<th width="70px">日期</th>
+			<th width="50px">类型</th>
+			<th width="80px">金额（元）</th>
+			<th>源账户</th>
+			<th>目标账户</th>
+		</tr>
+	</thead>
+	<tbody>
+		
+		<tr data-ng-repeat="trans in transList track by trans.id"  class="static-form">
+					<td>{{trans.getDateStr()}}</td>
+					<td>{{trans.getTypeStr()}}</td>
+					<td>{{trans.amount}}</td>
+					<td>{{trans.getFromAccount()}}</td>
+					<td>{{trans.getToAccount()}}</td>
+				</tr>
+		
+	</tbody>
+</table>

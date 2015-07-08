@@ -15,9 +15,23 @@
 		from account_audits
 		where id=#{id}
 	</select>
-	<select id="searchRecords" resultMap="AccountTransactionMapper">
-		select *
-		from account_audits
+	<select id="searchRecords" resultMap="AccountTransactionRecordMapper">
+		select aa.id as id, aa.date as date, aa.type as type, 
+			   aa.from_physical_account_id as from_physical_account_id,
+			   aa.to_physical_account_id as to_physical_account_id,
+			   aa.from_virtual_account_id as from_virtual_account_id,
+			   aa.to_virtual_account_id as to_virtual_account_id,
+			   aa.amount as amount,
+			   aa.description as description,
+			   fromPa.name as fromPhysicalAccountName,
+			   toPa.name as toPhysicalAccountName,
+			   fromVa.name as fromVirtualAccountName,
+			   toVa.name as toVirtualAccountName
+		from account_audits aa
+		left outer join physical_accounts fromPa on fromPa.id=aa.from_physical_account_id
+		left outer join physical_accounts toPa on toPa.id=aa.to_physical_account_id
+		left outer join virtual_accounts fromVa on fromVa.id=aa.from_virtual_account_id
+		left outer join virtual_accounts toVa on toVa.id=aa.to_virtual_account_id
 		where 1=1
 		<if test="filter.fromDate != null">
 			AND date >= #{filter.fromDate}
@@ -39,6 +53,23 @@
 		<result property="fromVirtualAccountId" column="from_virtual_account_id" />
 		<result property="toPhysicalAccountId" column="to_physical_account_id" />
 		<result property="toVirtualAccountId" column="to_virtual_account_id" />
+		<result property="amount" column="amount" />
+		<result property="description" column="description" />
+	</resultMap>
+	
+	<resultMap id="AccountTransactionRecordMapper"
+		type="org.binyu.myfinance.backend.dtos.ExtAccountTransactionRecord">
+		<id property="id" column="id" />
+		<result property="date" column="date" />
+		<result property="iType" column="type" />
+		<result property="fromPhysicalAccountId" column="from_physical_account_id" />
+		<result property="fromVirtualAccountId" column="from_virtual_account_id" />
+		<result property="toPhysicalAccountId" column="to_physical_account_id" />
+		<result property="toVirtualAccountId" column="to_virtual_account_id" />
+		<result property="fromPhysicalAccountName" column="fromPhysicalAccountName" />
+		<result property="fromVirtualAccountName" column="fromVirtualAccountName" />
+		<result property="toPhysicalAccountName" column="toPhysicalAccountName" />
+		<result property="toVirtualAccountName" column="toVirtualAccountName" />
 		<result property="amount" column="amount" />
 		<result property="description" column="description" />
 	</resultMap>

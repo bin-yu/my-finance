@@ -22,7 +22,7 @@ function($routeProvider) {
 		controller : 'AddRecordCtrl'
 	}).when('/month-records', {
 		templateUrl : 'views/record/month-records.html',
-		controller : 'AddRecordCtrl'
+		controller : 'MonthRecordCtrl'
 	}).when('/add-record', {
 		templateUrl : 'views/record/add-record.html',
 		controller : 'AddRecordCtrl'
@@ -65,6 +65,7 @@ myApp.constant('HostConfig', {
 	physicalAccount : '/physical_accounts/{id}',
 	virtualAccounts : '/virtual_accounts',
 	virtualAccount : '/virtual_accounts/{id}',
+	transactions : '/account_transactions',
 	doBatchTransaction : '/account_transactions/batch'
 });
 

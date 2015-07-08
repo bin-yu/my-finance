@@ -33,6 +33,7 @@ import org.binyu.myfinance.backend.daos.AccountStoreMapper;
 import org.binyu.myfinance.backend.dtos.AccountStore;
 import org.binyu.myfinance.backend.dtos.AccountTransaction;
 import org.binyu.myfinance.backend.dtos.AccountTransaction.TransactionType;
+import org.binyu.myfinance.backend.dtos.ExtAccountTransactionRecord;
 import org.binyu.myfinance.backend.dtos.PhysicalAccount;
 import org.binyu.myfinance.backend.dtos.TransactionSearchFilter;
 import org.binyu.myfinance.backend.dtos.TransactionSearchFilter.SortOrder;
@@ -228,7 +229,8 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
   }
 
   @Test(dataProvider = "testSearchTransactionsData")
-  public void testSearchTransactions(TransactionSearchFilter filter, List<AccountTransaction> expTransList) throws Exception
+  public void testSearchTransactions(TransactionSearchFilter filter, List<ExtAccountTransactionRecord> expTransList)
+      throws Exception
   {
     // prepareSearchTransactionData();
     // do the search
@@ -253,7 +255,7 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
         .andExpect(status().isOk())
         .andExpect(content().contentType("application/json;charset=UTF-8"))
         .andReturn();
-    List<AccountTransaction> retTransList = deserialize(result, new TypeReference<List<AccountTransaction>>()
+    List<ExtAccountTransactionRecord> retTransList = deserialize(result, new TypeReference<List<ExtAccountTransactionRecord>>()
     {
     });
     Assert.assertEquals(retTransList, expTransList);
@@ -274,47 +276,54 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
     Calendar olderThanOneMonth = Calendar.getInstance();
     olderThanOneMonth.add(Calendar.MONTH, -1);
     olderThanOneMonth.add(Calendar.DAY_OF_MONTH, -1);
-    AccountTransaction transactionNow1 = new AccountTransaction(0, now.getTime(), TransactionType.TRANSFER
+    ExtAccountTransactionRecord transactionNow1 = new ExtAccountTransactionRecord(0, now.getTime(), TransactionType.TRANSFER
         , fromPAccount.getId(), fromVAccount.getId()
         , toPAccount.getId(), toVAccount.getId()
-        , 100, "now");
+        , 100, "now"
+        , fromPAccount.getName(), fromVAccount.getName()
+        , toPAccount.getName(), toVAccount.getName());
     auditRepo.addRecord(transactionNow1);
 
-    AccountTransaction transactionOneDayAgo = new AccountTransaction(0, oneDayAgo.getTime(), TransactionType.TRANSFER
-        , fromPAccount.getId(), fromVAccount.getId()
-        , toPAccount.getId(), toVAccount.getId()
-        , 100, "oneDayAgo");
-    auditRepo.addRecord(transactionOneDayAgo);
-
-    AccountTransaction transactionOlderThanOneMonth = new AccountTransaction(0, olderThanOneMonth.getTime(),
+    ExtAccountTransactionRecord transactionOneDayAgo = new ExtAccountTransactionRecord(0, oneDayAgo.getTime(),
         TransactionType.TRANSFER
         , fromPAccount.getId(), fromVAccount.getId()
         , toPAccount.getId(), toVAccount.getId()
-        , 200, "olderThanOneMonth");
+        , 100, "oneDayAgo"
+        , fromPAccount.getName(), fromVAccount.getName()
+        , toPAccount.getName(), toVAccount.getName());
+    auditRepo.addRecord(transactionOneDayAgo);
+
+    ExtAccountTransactionRecord transactionOlderThanOneMonth = new ExtAccountTransactionRecord(0, olderThanOneMonth.getTime(),
+        TransactionType.TRANSFER
+        , fromPAccount.getId(), fromVAccount.getId()
+        , toPAccount.getId(), toVAccount.getId()
+        , 200, "olderThanOneMonth"
+        , fromPAccount.getName(), fromVAccount.getName()
+        , toPAccount.getName(), toVAccount.getName());
     auditRepo.addRecord(transactionOlderThanOneMonth);
 
-    List<AccountTransaction> fullList = new ArrayList<AccountTransaction>(3);
+    List<ExtAccountTransactionRecord> fullList = new ArrayList<ExtAccountTransactionRecord>(3);
     fullList.add(transactionOlderThanOneMonth);
     fullList.add(transactionOneDayAgo);
     fullList.add(transactionNow1);
 
-    List<AccountTransaction> fullDescList = new ArrayList<AccountTransaction>(fullList);
-    Collections.sort(fullDescList, new Comparator<AccountTransaction>()
+    List<ExtAccountTransactionRecord> fullDescList = new ArrayList<ExtAccountTransactionRecord>(fullList);
+    Collections.sort(fullDescList, new Comparator<ExtAccountTransactionRecord>()
     {
 
       @Override
-      public int compare(AccountTransaction t1, AccountTransaction t2)
+      public int compare(ExtAccountTransactionRecord t1, ExtAccountTransactionRecord t2)
       {
         return t2.getDate().compareTo(t1.getDate());
       }
 
     });
 
-    List<AccountTransaction> listExceptNow = new ArrayList<AccountTransaction>(2);
+    List<ExtAccountTransactionRecord> listExceptNow = new ArrayList<ExtAccountTransactionRecord>(2);
     listExceptNow.add(transactionOneDayAgo);
     listExceptNow.add(transactionOlderThanOneMonth);
 
-    List<AccountTransaction> oneMonthList = new ArrayList<AccountTransaction>(2);
+    List<ExtAccountTransactionRecord> oneMonthList = new ArrayList<ExtAccountTransactionRecord>(2);
     oneMonthList.add(transactionNow1);
     oneMonthList.add(transactionOneDayAgo);
     return new Object[][] {

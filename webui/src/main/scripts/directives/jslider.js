@@ -38,15 +38,15 @@ function($compile, $http, $templateCache, $interpolate) {
 					inputElement.val(ngModelCtrl.$viewValue).slider('refresh');
 				};
 				//refresh slider when 'maxVar' changes
-				scope.$watch(attrs.maxvar,function(newValue,oldValue){
-					if(newValue !== oldValue){
-						inputElement.attr('max',newValue).slider('refresh');
+				scope.$watch(attrs.maxvar, function(newValue, oldValue) {
+					if (newValue !== oldValue) {
+						inputElement.attr('max', newValue).slider('refresh');
 					}
 				});
 				//refresh slider when 'minVar' changes
-				scope.$watch(attrs.minvar,function(newValue,oldValue){
-					if(newValue !== oldValue){
-						inputElement.attr('min',newValue).slider('refresh');
+				scope.$watch(attrs.minvar, function(newValue, oldValue) {
+					if (newValue !== oldValue) {
+						inputElement.attr('min', newValue).slider('refresh');
 					}
 				});
 				//prevent <a> link click event.
@@ -69,35 +69,33 @@ function($compile, $http, $templateCache, $interpolate) {
 	};
 }]);
 
-
 angular.module('myFinance').directive('select', function() {
 	return {
 		restrict : 'E',
-		priority: 1,
-		require: '?ngModel',
-		link : function (scope, element, attrs ,ngModel) {
-			var ngModelCtrl=ngModel;
-			var defaultFn=ngModel.$render;
-			ngModel.$render = function (){
-				if(defaultFn)defaultFn();
-				element.attr('value',ngModelCtrl.$viewValue);
-				element.selectmenu('refresh');
-			};
+		priority : 1,
+		require : '?ngModel',
+		link : function(scope, element, attrs, ngModel) {
+			if (ngModel) {
+				var ngModelCtrl = ngModel;
+				var defaultFn = ngModel.$render;
+				ngModel.$render = function() {
+					if (defaultFn)
+						defaultFn();
+					element.attr('value', ngModelCtrl.$viewValue);
+					element.selectmenu('refresh');
+				};
+			}
 			element.selectmenu();
 			/*
-			var unbindInitializationWatch = scope.$watch(attrs.ngModel, function(newValue, oldValue) {
-										if (newValue=== undefined && oldValue === undefined) {
-											element.selectmenu();
-											//unbindInitializationWatch();
-										} else {
-											element.selectmenu('refresh');
-											//unbindInitializationWatch();
-										}
-									});*/
-			
-			
-
-			
+			 var unbindInitializationWatch = scope.$watch(attrs.ngModel, function(newValue, oldValue) {
+			 if (newValue=== undefined && oldValue === undefined) {
+			 element.selectmenu();
+			 //unbindInitializationWatch();
+			 } else {
+			 element.selectmenu('refresh');
+			 //unbindInitializationWatch();
+			 }
+			 });*/
 
 		}
 	};

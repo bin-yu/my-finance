@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 import org.binyu.myfinance.backend.dtos.AccountTransaction;
+import org.binyu.myfinance.backend.dtos.ExtAccountTransactionRecord;
 import org.binyu.myfinance.backend.dtos.TransactionSearchFilter;
 
 /**
@@ -32,5 +33,5 @@ public interface AccountAuditMapper
 
   AccountTransaction getRecord(long id);
 
-  List<AccountTransaction> searchRecords(@Param("filter") TransactionSearchFilter filter, RowBounds rowBounds);
+  List<ExtAccountTransactionRecord> searchRecords(@Param("filter") TransactionSearchFilter filter, RowBounds rowBounds);
 }

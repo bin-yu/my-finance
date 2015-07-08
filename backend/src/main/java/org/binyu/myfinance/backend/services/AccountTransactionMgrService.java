@@ -20,10 +20,13 @@ import org.binyu.myfinance.backend.daos.PhysicalAccountMapper;
 import org.binyu.myfinance.backend.daos.VirtualAccountMapper;
 import org.binyu.myfinance.backend.dtos.AccountStore;
 import org.binyu.myfinance.backend.dtos.AccountTransaction;
+import org.binyu.myfinance.backend.dtos.ExtAccountTransactionRecord;
 import org.binyu.myfinance.backend.dtos.PhysicalAccount;
 import org.binyu.myfinance.backend.dtos.TransactionSearchFilter;
 import org.binyu.myfinance.backend.dtos.VirtualAccount;
 import org.binyu.myfinance.backend.exceptions.InvalidInputException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -39,6 +42,7 @@ public class AccountTransactionMgrService
 
   // CONSTANTS ------------------------------------------------------
 
+  private static final Logger LOG = LoggerFactory.getLogger(AccountTransactionMgrService.class);
   // CLASS VARIABLES ------------------------------------------------
 
   // INSTANCE VARIABLES ---------------------------------------------
@@ -57,6 +61,8 @@ public class AccountTransactionMgrService
   @Transactional(rollbackFor = Throwable.class)
   public AccountTransaction newTransaction(AccountTransaction transactionToDo) throws InvalidInputException
   {
+
+    LOG.info("executing new transaction\n:" + transactionToDo);
     // do validations
     if (transactionToDo.getAmount() <= 0)
     {
@@ -68,15 +74,21 @@ public class AccountTransactionMgrService
     // do transactions
     if (hasFrom)
     {
+      LOG.info("Substracting " + transactionToDo.getAmount() + " money from Account[" + transactionToDo.getFromPhysicalAccountId()
+          + "," + transactionToDo.getFromVirtualAccountId() + "]...");
       updateAccountStoreAmount(transactionToDo.getFromPhysicalAccountId(), transactionToDo.getFromVirtualAccountId(),
           -transactionToDo.getAmount());
     }
     if (hasTo)
     {
+      LOG.info("Adding " + transactionToDo.getAmount() + " money to Account[" + transactionToDo.getToPhysicalAccountId() + ","
+          + transactionToDo.getToVirtualAccountId() + "]...");
+
       updateAccountStoreAmount(transactionToDo.getToPhysicalAccountId(), transactionToDo.getToVirtualAccountId(),
           transactionToDo.getAmount());
     }
     // add audit record
+    LOG.info("adding audit record...");
     auditRepo.addRecord(transactionToDo);
     return transactionToDo;
   }
@@ -97,7 +109,7 @@ public class AccountTransactionMgrService
     return has;
   }
 
-  public List<AccountTransaction> searchAudits(TransactionSearchFilter filter)
+  public List<ExtAccountTransactionRecord> searchAudits(TransactionSearchFilter filter)
   {
     return auditRepo.searchRecords(filter, new RowBounds(filter.getOffset(), filter.getLimit()));
   }
