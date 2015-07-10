@@ -28,7 +28,18 @@
 			</div><!-- /header -->
 			<div role="main" class="ui-content" >
 				<div class="scrollable-content slide-animate" ng-view jqm></div>
-			</div><!-- /content -->
+				<!--
+				<div class="modal" ng-show="loadingView">
+									<ul id="loading">
+										<li class="bar" ng-repeat="i in [0,1,2,3,4,5,6,7,8,9]"></li>
+									</ul>
+								</div>-->
+				
+				
+			<div class="loading" data-ng-show="loadingView">
+				</div>
+			</div>
+			<!-- /content -->
 			<div data-role="footer" data-position="fixed" >
 				<h4>Page Footer</h4>
 			</div><!-- /footer -->
@@ -75,7 +86,10 @@
 
 		<script src="scripts/app.config.js"></script>-->
 
+		<script src="scripts/services/memory.cache.service.js"></script>
 		<script src="scripts/services/rest.service.js"></script>
+		<script src="scripts/services/account.service.js"></script>
+		<script src="scripts/services/transaction.service.js"></script>
 
 		<script src="scripts/directives/field.js"></script>
 		<script src="scripts/directives/jslider.js"></script>

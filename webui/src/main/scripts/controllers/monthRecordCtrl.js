@@ -1,18 +1,9 @@
-angular.module('myFinance').controller('MonthRecordCtrl', ['$scope', '$log', 'RestService',
-function($scope, $log, RestService) {
+angular.module('myFinance').controller('MonthRecordCtrl', ['$scope', '$log', 'RestService', 'transactionsOfThisMonth',
+function($scope, $log, RestService, transactionsOfThisMonth) {
 	$scope.transList = [];
-	//load transList
-	var result = {
-		setData : function(data, headers) {
-			for (var i = 0; i < data.length; i++) {
-				$scope.transList.push(wrapTransaction(data[i]));
-			}
-		},
-		setError : function(status, errorData) {
-			$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
-		}
-	};
-	RestService.doGet('transactions', result);
+	for (var i = 0; i < transactionsOfThisMonth.length; i++) {
+		$scope.transList.push(wrapTransaction(transactionsOfThisMonth[i]));
+	}
 
 	//wrap transaction data with ui getter methods.
 	function wrapTransaction(transData) {

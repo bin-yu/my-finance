@@ -1,71 +1,49 @@
 'use strict';
 
-angular.module('myFinance').controller('PhysicalAccountCtrl', ['$scope', '$log', 'RestService',
-function($scope, $log, RestService) {
+angular.module('myFinance').controller('PhysicalAccountCtrl', ['$scope', '$log', 'RestService', 'AccountService',
+function($scope, $log, RestService, AccountService) {
+	//initialize account list
 	$scope.physicalAccountList = [];
-	$scope.reloadAccountList = function() {
-		var result = {
-			setData : function(data, headers) {
-				$scope.physicalAccountList = data;
-			},
-			setError : function(status, errorData) {
-				$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
-			}
-		};
-		RestService.doGet('physicalAccounts', result);
-	};
+	AccountService.asyncGetPhysicalAccountList().then(function(list) {
+		$scope.physicalAccountList = list;
+	});
 	$scope.addNewAccount = function() {
-		var result = {
-			setData : function(data, headers) {
-				$scope.physicalAccountList.push(jQuery.extend(true, {}, data));
-			},
-			setError : function(status, errorData) {
-				$log.error('failed to add this physical account, the reason is : \n' + errorData);
-				alert("failed to add account!");
-			}
-		};
-		RestService.doPost('physicalAccounts', result, {
+		RestService.doPost('physicalAccounts', {
 			data : $scope.newAccount
+		}).then(function(data, headers) {
+			$scope.physicalAccountList.push(jQuery.extend(true, {}, data));
+			AccountService.flushPhysicalAccountList();
+		}, function(status, errorData) {
+			$log.error('failed to add this physical account, the reason is : \n' + errorData);
+			alert("failed to add account!");
 		});
 	};
 	$scope.saveAccount = function(account) {
 		delete account.isInEditMode;
-		var result = {
-			setData : function(data, headers) {
-			},
-			setError : function(status, errorData) {
-				$log.error('failed to update this physical account, the reason is : \n' + errorData);
-				alert('failed to update this physical account, the reason is : \n' + errorData);
-			}
-		};
-		RestService.doPut('physicalAccount', result, {
+		RestService.doPut('physicalAccount', {
 			pathParametersMap : {
 				id : account.id
 			},
 			data : account
+		}).then(function(data, headers) {
+			AccountService.flushPhysicalAccountList();
+		}, function(status, errorData) {
+			$log.error('failed to update this physical account, the reason is : \n' + errorData);
+			alert('failed to update this physical account, the reason is : \n' + errorData);
 		});
 	};
 	$scope.deleteAccount = function(idx) {
-		
-		var account = $scope.physicalAccountList[idx];
-
-		var result = {
-			setData : function(data, headers) {
-				$scope.physicalAccountList.splice(idx, 1);
-			},
-			setError : function(status, errorData) {
-				$log.error('failed to update this physical account, the reason is : \n' + errorData);
-				alert('删除失败 : \n' + errorData);
-			}
-		};
-		RestService.doDelete('physicalAccount', result, {
+		RestService.doDelete('physicalAccount', {
 			pathParametersMap : {
-				id : account.id
+				id : $scope.physicalAccountList[idx]
 			}
+		}).then(function(data, headers) {
+			$scope.physicalAccountList.splice(idx, 1);
+			AccountService.flushPhysicalAccountList();
+		}, function(status, errorData) {
+			$log.error('failed to update this physical account, the reason is : \n' + errorData);
+			alert('删除失败 : \n' + errorData);
 		});
 	};
 
-	//initialize account list
-	
-	$scope.reloadAccountList();
 }]);

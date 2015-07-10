@@ -1,72 +1,58 @@
 'use strict';
 
-angular.module('myFinance').controller('VirtualAccountCtrl', ['$scope', '$log', 'RestService',
-function($scope, $log, RestService) {
+angular.module('myFinance').controller('VirtualAccountCtrl', ['$scope', '$log', 'RestService','AccountService',
+function($scope, $log, RestService,AccountService) {
+	//load virtualAccountList
 	$scope.virtualAccountList = [];
-	$scope.reloadAccountList = function() {
-		$scope.virtualAccountList.slice(0,$scope.virtualAccountList.length);
-		var result = {
-			setData : function(data, headers) {
-				$scope.virtualAccountList = data;
-			},
-			setError : function(status, errorData) {
-				$log.error('failed to retrieve virtual account list, the reason is : \n' + errorData);
-			}
-		};
-		RestService.doGet('virtualAccounts', result);
-	};
+	AccountService.asyncGetVirtualAccountList().then(function(list) {
+		$scope.virtualAccountList = list;
+	});
+	
 	$scope.addNewAccount = function() {
-		var result = {
-			setData : function(data, headers) {
+		RestService.doPost('virtualAccounts', {
+			data : $scope.newAccount
+		}).then(
+			function(data, headers) {
 				$scope.virtualAccountList.push(jQuery.extend(true, {}, data));
+				AccountService.flushVirtualAccountList();
 			},
-			setError : function(status, errorData) {
+			function(status, errorData) {
 				$log.error('failed to add this virtual account, the reason is : \n' + errorData);
 				alert("failed to add account!");
-			}
-		};
-		RestService.doPost('virtualAccounts', result, {
-			data : $scope.newAccount
-		});
+			});
 	};
 	$scope.saveAccount = function(account) {
 		delete account.isInEditMode;
-		var result = {
-			setData : function(data, headers) {
-			},
-			setError : function(status, errorData) {
-				$log.error('failed to update this virtual account, the reason is : \n' + errorData);
-				alert('failed to update this virtual account, the reason is : \n' + errorData);
-			}
-		};
-		RestService.doPut('virtualAccount', result, {
+		RestService.doPut('virtualAccount', {
 			pathParametersMap : {
 				id : account.id
 			},
 			data : account
-		});
+		}).then(function(data, headers) {
+				AccountService.flushVirtualAccountList();
+			},
+			function(status, errorData) {
+				$log.error('failed to update this virtual account, the reason is : \n' + errorData);
+				alert('failed to update this virtual account, the reason is : \n' + errorData);
+			});
 	};
 	$scope.deleteAccount = function(idx) {
-		
-		var account = $scope.virtualAccountList[idx];
-
-		var result = {
-			setData : function(data, headers) {
+		RestService.doDelete('virtualAccount', {
+			pathParametersMap : {
+				id : $scope.virtualAccountList[idx].id
+			}
+		}).then(function(data, headers) {
 				$scope.virtualAccountList.splice(idx, 1);
+				AccountService.flushVirtualAccountList();
 			},
-			setError : function(status, errorData) {
+			function(status, errorData) {
 				$log.error('failed to update this virtual account, the reason is : \n' + errorData);
 				alert('删除失败 : \n' + errorData);
-			}
-		};
-		RestService.doDelete('virtualAccount', result, {
-			pathParametersMap : {
-				id : account.id
-			}
-		});
+			});
 	};
-
-	//initialize account list
+	/*
+	$scope.getFormName= function(account){
+			return 'form_'+(account.id>=0?account.id:'_'+account.id);
+		};*/
 	
-	$scope.reloadAccountList();
 }]);

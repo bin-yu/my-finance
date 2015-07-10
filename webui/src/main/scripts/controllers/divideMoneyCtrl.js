@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('myFinance').controller('DivideMoneyCtrl', ['$scope', '$log', 'RestService',
-function($scope, $log, RestService) {
+angular.module('myFinance').controller('DivideMoneyCtrl', ['$scope', '$log', 'RestService', 'AccountService',
+function($scope, $log, RestService, AccountService) {
 
 	$scope.allocating = {
 		//refresh target virtual account
@@ -49,7 +49,7 @@ function($scope, $log, RestService) {
 			this.virtualAccountList = [];
 			//remove unallocated account from the list
 			for (var i = 0; i < list.length; i++) {
-				if(list[i].id!=-1){
+				if (list[i].id != -1) {
 					this.virtualAccountList.push(list[i]);
 				}
 			}
@@ -58,7 +58,7 @@ function($scope, $log, RestService) {
 		execute : function() {
 			if (this.targetVa && this.virtualAccountList) {
 				var transactionList = [];
-				var now=new Date().toUTCString();
+				var now = new Date().toUTCString();
 				for (var i = 0; i < this.virtualAccountList.length; i++) {
 					transactionList.push({
 						date : now,
@@ -71,17 +71,13 @@ function($scope, $log, RestService) {
 						description : '分赃'
 					});
 				}
-				var result = {
-					setData : function(data, headers) {
-						alert('success');
-					},
-					setError : function(status, errorData) {
-						$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
-						alert('failed:status=' + status);
-					}
-				};
-				RestService.doPost('doBatchTransaction', result, {
+				RestService.doPost('doBatchTransaction', {
 					data : transactionList
+				}).then(function(data, headers) {
+					alert('success');
+				}, function(status, errorData) {
+					$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
+					alert('failed:status=' + status);
 				});
 			}
 		}
@@ -93,30 +89,19 @@ function($scope, $log, RestService) {
 		}
 	});
 
-	//load physicalAccountList
-	var result = {
-		setData : function(data, headers) {
-			$scope.physicalAccountList = data;
-			if ($scope.physicalAccountList.length > 0) {
-				$scope.allocating.setTargetPhysicalAccount($scope.physicalAccountList[0]);
-			}
-		},
-		setError : function(status, errorData) {
-			$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
+	//initialize physicalAccountList
+	$scope.physicalAccountList = [];
+	AccountService.asyncGetPhysicalAccountList().then(function(list) {
+		$scope.physicalAccountList = list;
+		if ($scope.physicalAccountList.length > 0) {
+			$scope.allocating.setTargetPhysicalAccount($scope.physicalAccountList[0]);
 		}
-	};
-	RestService.doGet('physicalAccounts', result);
+	});
 
 	//load virtualAccountList
-	var result = {
-		setData : function(data, headers) {
-			$scope.allocating.initVirtualAccountList(data);
-		},
-		setError : function(status, errorData) {
-			$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
-		}
-	};
-	RestService.doGet('virtualAccounts', result);
+	AccountService.asyncGetVirtualAccountList().then(function(list) {
+		$scope.allocating.initVirtualAccountList(list);
+	});
 
 	$scope.doDivide = function() {
 		$scope.allocating.execute();

@@ -50,9 +50,9 @@
 		 *            ignoreAuthModule  // if true, the retry mechanism will be igore
 		 *        }
 		 */
-		.factory('RestService',['$http', '$log','UrlService',function($http, $log,UrlService){
+		.factory('RestService',['$http', '$log','UrlService','$q',function($http, $log,UrlService,$q){
 			var baseOp = function(options){
-				return function(resourceKey, result, config){
+				return function(resourceKey, config){
 					var _config = config || {};
 					var url = UrlService.getUrl(resourceKey,_config.pathParametersMap);
 					$log.debug(url);
@@ -68,7 +68,7 @@
 							headers[key] = _config.additionalHeaders[key];
 						}
 					}
-					
+					var deferred=$q.defer();
 					$http(
 							{
 								method : options.method,
@@ -82,23 +82,12 @@
 					)
 					.success(function(data, status, headers){
 						$log.debug(options.func + '>> response content = ' + JSON.stringify(data));
-						if(result.setData && typeof result.setData === 'function'){
-							result.setData(data,headers);
-						}else{
-							result.data = data;
-							result.status = status;
-							result.headers = headers;
-						}
+						deferred.resolve(data,headers);
 					}).error(function(errorData, status, headers){
 						$log.error(options.func + '>> Failed, resp code = ' + status);
-						if(result.setError && typeof result.setError === 'function'){
-							result.setError(status,errorData);
-						}else{
-							result.status = status;
-							result.errorData = errorData;
-							result.headers = headers;
-						}
+						deferred.reject(status,errorData);
 					});
+					return deferred.promise;
 				};
 			};
 			

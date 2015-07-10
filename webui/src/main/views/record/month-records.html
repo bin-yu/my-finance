@@ -1,3 +1,7 @@
+<div >
+	<label for="add-record"></label>
+	<a href="#/add-record" data-role="button" data-icon="plus" data-iconpos="right" name="add-record" id="add-record" >添加记录</a>
+</div>
 <table class="account-table">
 	<thead class="seperator">
 		<tr class="seperator">
@@ -9,14 +13,14 @@
 		</tr>
 	</thead>
 	<tbody>
-		
+
 		<tr data-ng-repeat="trans in transList track by trans.id"  class="static-form">
-					<td>{{trans.getDateStr()}}</td>
-					<td>{{trans.getTypeStr()}}</td>
-					<td>{{trans.amount}}</td>
-					<td>{{trans.getFromAccount()}}</td>
-					<td>{{trans.getToAccount()}}</td>
-				</tr>
-		
+			<td>{{trans.getDateStr()}}</td>
+			<td>{{trans.getTypeStr()}}</td>
+			<td>{{trans.amount}}</td>
+			<td>{{trans.getFromAccount()}}</td>
+			<td>{{trans.getToAccount()}}</td>
+		</tr>
+
 	</tbody>
 </table>

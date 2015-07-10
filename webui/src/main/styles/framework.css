@@ -2,89 +2,89 @@
  * 	Control mobile angular ui sidebar's size and position
  */
 /*
-@media only screen and (max-width: 480px) {
-	.sidebar-left {
-		width: 50%;
-	}
-	.sidebar-right {
-		width: 50%;
-	}
-	.sidebar-left-in .app {
-		transform: translate3d(50%, 0px, 0px);
-	}
-	.sidebar-right-in .app {
-		transform: translate3d(-50%, 0px, 0px);
-	}
-}
-@media only screen and (min-width: 480px) {
-	.sidebar-left {
-		width: 35%;
-	}
-	.sidebar-right {
-		width: 35%;
-	}
-	.sidebar-left-in .app {
-		transform: translate3d(35%, 0px, 0px);
-	}
-	.sidebar-right-in .app {
-		transform: translate3d(-35%, 0px, 0px);
-	}
-}
-@media only screen and  (min-width: 992px) {
-	.sidebar-left {
-		width: 20%;
-	}
-	.sidebar-right {
-		width: 20%;
-	}
-	.has-sidebar-left .app, .sidebar-left-in .app {
-		margin-left: 20%;
-	}
-	.sidebar-right-in .app {
-		margin-right: 20%;
-	}
-}
-.navbar {
-	background-color:rgb(85,85,85);
-	color:#ffffff;
-}
-.sidebar-left {
-	border-right-style:groove;
-	border-color:#008000;
-	border-width:10px;
-}
-.app-content {
-	
-	background-color:#DFDFDF;
-	color:#000000;
-}*/
+ @media only screen and (max-width: 480px) {
+ .sidebar-left {
+ width: 50%;
+ }
+ .sidebar-right {
+ width: 50%;
+ }
+ .sidebar-left-in .app {
+ transform: translate3d(50%, 0px, 0px);
+ }
+ .sidebar-right-in .app {
+ transform: translate3d(-50%, 0px, 0px);
+ }
+ }
+ @media only screen and (min-width: 480px) {
+ .sidebar-left {
+ width: 35%;
+ }
+ .sidebar-right {
+ width: 35%;
+ }
+ .sidebar-left-in .app {
+ transform: translate3d(35%, 0px, 0px);
+ }
+ .sidebar-right-in .app {
+ transform: translate3d(-35%, 0px, 0px);
+ }
+ }
+ @media only screen and  (min-width: 992px) {
+ .sidebar-left {
+ width: 20%;
+ }
+ .sidebar-right {
+ width: 20%;
+ }
+ .has-sidebar-left .app, .sidebar-left-in .app {
+ margin-left: 20%;
+ }
+ .sidebar-right-in .app {
+ margin-right: 20%;
+ }
+ }
+ .navbar {
+ background-color:rgb(85,85,85);
+ color:#ffffff;
+ }
+ .sidebar-left {
+ border-right-style:groove;
+ border-color:#008000;
+ border-width:10px;
+ }
+ .app-content {
+
+ background-color:#DFDFDF;
+ color:#000000;
+ }*/
 
 /**
  * 	For jquery mobile left side bar
  */
 .ui-panel-inner {
-	margin-top:42px;
-	margin-bottom:42px;
-	padding:0px;
+	margin-top: 42px;
+	margin-bottom: 42px;
+	padding: 0px;
 }
 .ui-btn-corner-all, .ui-btn.ui-corner-all {
-	border-radius:10px;
+	border-radius: 10px;
 }
 /* for pane, header and footer*/
 .ui-page, .ui-page .ui-panel, .ui-page .ui-header, .ui-page .ui-footer {
-	background-color:rgb(85,85,85);
-	color:#ffffff;
+	background-color: rgb(85,85,85);
+	color: #ffffff;
 	border: none;
-	padding:0;
+	padding: 0;
 }
 .ui-fixed-hidden {
-  position: fixed;
+	position: fixed;
 }
 /* for page body */
-.ui-panel-wrapper{
-		position:absolute;
-	}
-	
+.ui-panel-wrapper {
+	position: absolute;
+}
+
 @media only screen and (max-width: 480px) {
 	.ui-panel-wrapper, .ui-header, .ui-footer {
 		width: 100%;
@@ -98,7 +98,6 @@
 		left: 0;
 		float: left;
 		width: 15%;
-
 		-webkit-transition: none !important;
 		-moz-transition: none !important;
 		transition: none !important;
@@ -116,7 +115,7 @@
 	}
 
 	.ui-panel-wrapper, .ui-header, .ui-footer {
-		left:15%;
+		left: 15%;
 		width: 85%;
 	}
 }
@@ -135,8 +134,6 @@
 	position: absolute;
 }
 
-
-
 .slide-animate.ng-enter {
 	left: 100%;
 }
@@ -151,10 +148,28 @@
 	display: none;
 }
 
-
 /**
  * 	Overall font
  */
 body {
 	font-family: Tahoma, Arial, Helvetica, "Microsoft YaHei New", "Microsoft Yahei", "微软雅黑", 宋体, SimSun, STXihei, "华文细黑", sans-serif;
+}
+
+/**
+ * 	for loading icon and its position
+ */
+.ui-content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.loading {
+	width: 50%;
+	height: 50%;
+	top: 20%;
+	margin: 0 auto;
+	position: relative;
+	background: url("/images/loading.gif") no-repeat center center rgba(0,0,0,0)
 }
