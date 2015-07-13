@@ -11,12 +11,12 @@
 	<tbody>
 		<tr data-ng-repeat="(idx,account) in virtualAccountList track by account.id"  data-ng-class="account.isInEditMode? 'active-form':'static-form'">
 			<ng-form name="{{'form_'+idx}}">
-			<td><input type="text" data-ng-model="account.name" required /></td>
-			<td><input type="text" data-ng-model="account.description"/></td>
-			<td><input type="number" data-ng-model="account.budget" min="0" integer /></td>
+			<td><input type="text" data-ng-disabled="account.isInEditMode" data-ng-model="account.name" required /></td>
+			<td><input type="text" data-ng-disabled="account.isInEditMode" data-ng-model="account.description"/></td>
+			<td><input type="number" data-ng-disabled="account.isInEditMode" data-ng-model="account.budget" min="0" integer /></td>
 			<td>{{account.amount}}</td>
 			<td>
-				<button class="ui-btn ui-shadow ui-corner-all ui-icon-edit ui-btn-icon-notext ui-btn-inline" data-ng-show="!account.isInEditMode && (account.id>=0)" data-ng-click="account.isInEditMode=!account.isInEditMode">修改</button>
+				<button class="ui-btn ui-shadow ui-corner-all ui-icon-edit ui-btn-icon-notext ui-btn-inline" data-ng-show="!account.isInEditMode && (account.id>=0)" data-ng-click="prepareEdit(account)">修改</button>
 				<button class="ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext ui-btn-inline" data-ng-show="!account.isInEditMode && (account.id>=0)" data-ng-click="deleteAccount(idx)">删除</button>
 				<button class="ui-btn ui-shadow ui-corner-all ui-icon-check ui-btn-icon-notext ui-btn-inline" data-ng-disabled="{{'form_'+idx}}.$invalid" data-ng-show="account.isInEditMode" data-ng-click="saveAccount(account)">保存</button>
 			</td>

@@ -39,15 +39,15 @@ function($compile, $http, $templateCache, $interpolate) {
 				};
 				//refresh slider when 'maxVar' changes
 				scope.$watch(attrs.maxvar, function(newValue, oldValue) {
-					if (newValue !== oldValue) {
+					//if (newValue !== oldValue) {
 						inputElement.attr('max', newValue).slider('refresh');
-					}
+					//}
 				});
 				//refresh slider when 'minVar' changes
 				scope.$watch(attrs.minvar, function(newValue, oldValue) {
-					if (newValue !== oldValue) {
+					//if (newValue !== oldValue) {
 						inputElement.attr('min', newValue).slider('refresh');
-					}
+					//}
 				});
 				//prevent <a> link click event.
 				templateElement.find('a').click(function(e) {

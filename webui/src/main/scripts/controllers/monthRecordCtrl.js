@@ -1,5 +1,5 @@
-angular.module('myFinance').controller('MonthRecordCtrl', ['$scope', '$log', 'RestService', 'transactionsOfThisMonth',
-function($scope, $log, RestService, transactionsOfThisMonth) {
+angular.module('myFinance').controller('MonthRecordCtrl', ['$scope', '$log', 'transactionsOfThisMonth',
+function($scope, $log, transactionsOfThisMonth) {
 	$scope.transList = [];
 	for (var i = 0; i < transactionsOfThisMonth.length; i++) {
 		$scope.transList.push(wrapTransaction(transactionsOfThisMonth[i]));

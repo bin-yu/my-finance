@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('myFinance').controller('DivideMoneyCtrl', ['$scope', '$log', 'RestService', 'AccountService',
-function($scope, $log, RestService, AccountService) {
+angular.module('myFinance').controller('DivideMoneyCtrl', ['$scope', '$log', 'AccountTransactionService', 'physicalAccountList', 'virtualAccountList',
+function($scope, $log, AccountTransactionService, physicalAccountList, virtualAccountList) {
 
 	$scope.allocating = {
 		//refresh target virtual account
@@ -44,6 +44,7 @@ function($scope, $log, RestService, AccountService) {
 		},
 		setTargetPhysicalAccount : function(account) {
 			this.targetPhysicalAccount = account;
+			this.onTargetAccountChange();
 		},
 		initVirtualAccountList : function(list) {
 			this.virtualAccountList = [];
@@ -71,14 +72,7 @@ function($scope, $log, RestService, AccountService) {
 						description : '分赃'
 					});
 				}
-				RestService.doPost('doBatchTransaction', {
-					data : transactionList
-				}).then(function(data, headers) {
-					alert('success');
-				}, function(status, errorData) {
-					$log.error('failed to retrieve physical account list, the reason is : \n' + errorData);
-					alert('failed:status=' + status);
-				});
+				AccountTransactionService.doBatchTransaction(transactionList);
 			}
 		}
 	};
@@ -90,18 +84,13 @@ function($scope, $log, RestService, AccountService) {
 	});
 
 	//initialize physicalAccountList
-	$scope.physicalAccountList = [];
-	AccountService.asyncGetPhysicalAccountList().then(function(list) {
-		$scope.physicalAccountList = list;
-		if ($scope.physicalAccountList.length > 0) {
-			$scope.allocating.setTargetPhysicalAccount($scope.physicalAccountList[0]);
-		}
-	});
+	$scope.physicalAccountList = physicalAccountList;
+	if ($scope.physicalAccountList.length > 0) {
+		$scope.allocating.setTargetPhysicalAccount($scope.physicalAccountList[0]);
+	}
 
-	//load virtualAccountList
-	AccountService.asyncGetVirtualAccountList().then(function(list) {
-		$scope.allocating.initVirtualAccountList(list);
-	});
+	//initialize virtualAccountList
+	$scope.allocating.initVirtualAccountList(virtualAccountList);
 
 	$scope.doDivide = function() {
 		$scope.allocating.execute();

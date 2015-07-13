@@ -1,58 +1,25 @@
 'use strict';
 
-angular.module('myFinance').controller('VirtualAccountCtrl', ['$scope', '$log', 'RestService','AccountService',
-function($scope, $log, RestService,AccountService) {
+angular.module('myFinance').controller('VirtualAccountCtrl', ['$scope', '$log', 'RestService','AccountService','virtualAccountList',
+function($scope, $log, RestService,AccountService,virtualAccountList) {
 	//load virtualAccountList
-	$scope.virtualAccountList = [];
-	AccountService.asyncGetVirtualAccountList().then(function(list) {
-		$scope.virtualAccountList = list;
-	});
+	$scope.virtualAccountList = virtualAccountList;
 	
 	$scope.addNewAccount = function() {
-		RestService.doPost('virtualAccounts', {
-			data : $scope.newAccount
-		}).then(
-			function(data, headers) {
-				$scope.virtualAccountList.push(jQuery.extend(true, {}, data));
-				AccountService.flushVirtualAccountList();
-			},
-			function(status, errorData) {
-				$log.error('failed to add this virtual account, the reason is : \n' + errorData);
-				alert("failed to add account!");
-			});
+		AccountService.addVirtualAccount($scope.newAccount).then(function(data){
+			$scope.virtualAccountList.push(jQuery.extend(true, {}, data));
+		});
 	};
 	$scope.saveAccount = function(account) {
 		delete account.isInEditMode;
-		RestService.doPut('virtualAccount', {
-			pathParametersMap : {
-				id : account.id
-			},
-			data : account
-		}).then(function(data, headers) {
-				AccountService.flushVirtualAccountList();
-			},
-			function(status, errorData) {
-				$log.error('failed to update this virtual account, the reason is : \n' + errorData);
-				alert('failed to update this virtual account, the reason is : \n' + errorData);
-			});
+		AccountService.updateVirtualAccount(account);
 	};
 	$scope.deleteAccount = function(idx) {
-		RestService.doDelete('virtualAccount', {
-			pathParametersMap : {
-				id : $scope.virtualAccountList[idx].id
-			}
-		}).then(function(data, headers) {
-				$scope.virtualAccountList.splice(idx, 1);
-				AccountService.flushVirtualAccountList();
-			},
-			function(status, errorData) {
-				$log.error('failed to update this virtual account, the reason is : \n' + errorData);
-				alert('删除失败 : \n' + errorData);
-			});
+		AccountService.deleteVirtualAccount($scope.virtualAccountList[idx]).then(function(){
+			$scope.virtualAccountList.splice(idx, 1);
+		});
 	};
-	/*
-	$scope.getFormName= function(account){
-			return 'form_'+(account.id>=0?account.id:'_'+account.id);
-		};*/
-	
+	$scope.prepareEdit = function(account){
+		account.isInEditMode=true;
+	};
 }]);

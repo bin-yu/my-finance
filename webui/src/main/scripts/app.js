@@ -19,7 +19,7 @@ function($routeProvider) {
 		controller : 'HomeCtrl'
 	}).when('/manage-records', {
 		templateUrl : 'views/record/manage-records.html',
-		controller : 'AddRecordCtrl'
+		//controller : 'AddRecordCtrl'
 	}).when('/month-records', {
 		templateUrl : 'views/record/month-records.html',
 		controller : 'MonthRecordCtrl',
@@ -30,31 +30,57 @@ function($routeProvider) {
 		}
 	}).when('/add-record', {
 		templateUrl : 'views/record/add-record.html',
-		controller : 'AddRecordCtrl'
+		controller : 'AddRecordCtrl',
+		resolve : {
+			physicalAccountList : function(AccountService){
+				return AccountService.getPhysicalAccountList();
+			},
+			virtualAccountList : function(AccountService){
+				return AccountService.getVirtualAccountList();
+			}
+		}
 	}).when('/search-records', {
 		templateUrl : 'views/record/search-records.html',
 		controller : 'AddRecordCtrl'
 	}).when('/manage-accounts', {
 		templateUrl : 'views/account/manage-accounts.html',
-		controller : 'AddRecordCtrl'
+		//controller : 'AddRecordCtrl'
 	}).when('/pysical-accounts', {
 		templateUrl : 'views/account/pysical-accounts.html',
-		controller : 'PhysicalAccountCtrl'
+		controller : 'PhysicalAccountCtrl',
+		resolve : {
+			physicalAccountList : function(AccountService){
+				return AccountService.getPhysicalAccountList();
+			}
+		}
 	}).when('/virtual-accounts', {
 		templateUrl : 'views/account/virtual-accounts.html',
-		controller : 'VirtualAccountCtrl'
+		controller : 'VirtualAccountCtrl',
+		resolve : {
+			virtualAccountList : function(AccountService){
+				return AccountService.getVirtualAccountList();
+			}
+		}
 	}).when('/divide-money', {
 		templateUrl : 'views/account/divide-money.html',
-		controller : 'DivideMoneyCtrl'
+		controller : 'DivideMoneyCtrl',
+		resolve : {
+			physicalAccountList : function(AccountService){
+				return AccountService.getPhysicalAccountList();
+			},
+			virtualAccountList : function(AccountService){
+				return AccountService.getVirtualAccountList();
+			}
+		}
 	}).when('/manage-reports', {
 		templateUrl : 'views/report/manage-reports.html',
 		controller : 'AddRecordCtrl'
 	}).when('/month-reports', {
 		templateUrl : 'views/report/month-reports.html',
-		controller : 'AddRecordCtrl'
+		//controller : 'AddRecordCtrl'
 	}).when('/history-reports', {
 		templateUrl : 'views/report/history-reports.html',
-		controller : 'AddRecordCtrl'
+		//controller : 'AddRecordCtrl'
 	}).otherwise({
 		redirectTo : '/'
 	});
@@ -89,12 +115,12 @@ myApp.directive('jqm', function($timeout) {
 myApp.run(['$rootScope', function($root) {
   $root.$on('$routeChangeStart', function(e, curr, prev) { 
     if (curr.$$route && curr.$$route.resolve) {
-      // Show a loading message until promises aren't resolved
+      // Show a loading icon until promises aren't resolved
       $root.loadingView = true;
     }
   });
   $root.$on('$routeChangeSuccess', function(e, curr, prev) { 
-    // Hide loading message
+    // Hide loading icon
     $root.loadingView = false;
   });
 }]);

@@ -94,7 +94,7 @@
 .active-form input.ng-valid.ng-touched {
 	background-color: #FFFFFF;
 }
-.static-form input {
+.static-form .ui-input-text input {
 	background-color: rgba(0, 0, 0, 0);
 	border: none;
 	outline: none;
@@ -113,4 +113,8 @@
 }
 .ui-field-contain > label ~ [class*="ui-"] {
 	width : 50%;
+}
+.disabled-input {
+	background:rgba(0,0,0,0);
+    border:none;
 }

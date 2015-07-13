@@ -1,23 +1,6 @@
-angular.module('myFinance').controller('AddRecordCtrl', ['$scope', '$log', 'RestService', 'AccountService','AccountTransactionService',
-function($scope, $log, RestService, AccountService,AccountTransactionService) {
-	//initialize physicalAccountList
-	$scope.physicalAccountList = [];
-	AccountService.asyncGetPhysicalAccountList().then(function(list) {
-		$scope.physicalAccountList = list;
-		if ($scope.physicalAccountList.length > 0) {
-			$scope.trans.fromPhysicalAccount = $scope.physicalAccountList[0];
-			$scope.trans.toPhysicalAccount = $scope.physicalAccountList[0];
-		}
-	});
-
-	//load virtualAccountList
-	$scope.virtualAccountList = [];
-	AccountService.asyncGetVirtualAccountList().then(function(list) {
-		$scope.virtualAccountList = list;
-		if ($scope.virtualAccountList.length > 0) {
-			$scope.trans.fromVirtualAccount = $scope.trans.toVirtualAccount = $scope.virtualAccountList[0];
-		}
-	});
+angular.module('myFinance').controller('AddRecordCtrl', ['$scope', '$log', 'AccountTransactionService', 'physicalAccountList', 'virtualAccountList',
+function($scope, $log, AccountTransactionService, physicalAccountList, virtualAccountList) {
+	
 	//define the form data and actions
 	$scope.trans = {
 		date : new Date(),
@@ -40,14 +23,19 @@ function($scope, $log, RestService, AccountService,AccountTransactionService) {
 				amount : this.amount,
 				description : this.desc
 			};
-			RestService.doPost('transactions', {
-				data : transData
-			}).then(function(data, headers) {
-				AccountTransactionService.flushTransactionListOfThisMonth();
-			}, function(status, errorData) {
-				$log.error('failed to add the record, the reason is : \n' + errorData);
-				alert('failed:status=' + status);
-			});
+			AccountTransactionService.addTransaction(transData);
 		}
 	};
+	//initialize from/to PhysicalAccount
+	$scope.physicalAccountList=physicalAccountList;
+	if ($scope.physicalAccountList.length > 0) {
+		$scope.trans.fromPhysicalAccount = $scope.physicalAccountList[0];
+		$scope.trans.toPhysicalAccount = $scope.physicalAccountList[0];
+	}
+
+	//initial from/to virtualAccount
+	$scope.virtualAccountList=virtualAccountList;
+	if ($scope.virtualAccountList.length > 0) {
+		$scope.trans.fromVirtualAccount = $scope.trans.toVirtualAccount = $scope.virtualAccountList[0];
+	}
 }]);
