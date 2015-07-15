@@ -1,7 +1,7 @@
 <div>
 	<div>
 		<label for="select-record-date">日期:</label>
-		<input type="date" id="select-record-date" data-ng-model="trans.date"/>
+		<input type="date" id="select-record-date" data-ng-model="trans.date" jqm-text-input/>
 		<label for="select-record-type">类型:</label>
 		<select name="select-record-type" id="select-record-type" data-ng-model="trans.type">
 			<option value="INCOME">收入</option>
@@ -33,14 +33,13 @@
 			</select>
 		</div>
 		<label for="number-ammount">金额：</label>
-		<input data-clear-btn="false" pattern="[0-9]*" name="number-ammount" id="number-ammount" value="0" type="number" data-ng-model="trans.amount">
+		<input data-clear-btn="false" pattern="[0-9]*" name="number-ammount" id="number-ammount" value="0" type="number" data-ng-model="trans.amount" jqm-text-input>
 		<label for="text-desc">备注：</label>
-		<input data-clear-btn="true" name="text-desc" id="text-desc" value="" type="text" data-ng-model="trans.desc">
+		<input data-clear-btn="true" name="text-desc" id="text-desc" value="" type="text" data-ng-model="trans.desc" jqm-text-input>
 	</div>
-	<br />
 	<br />
 	<div >
 		<label for="input-submit"></label>
-		<a href="#/month-records" data-role="button" data-icon="plus" data-iconpos="right" name="input-submit" id="input-submit" data-ng-click="trans.submit()">添加记录</a>
+		<a href="#/month-records" data-role="button" data-icon="plus" data-iconpos="right" name="input-submit" id="input-submit" data-ng-click="trans.submit()" jqm-button>添加记录</a>
 	</div>
 </div>

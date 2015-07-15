@@ -8,10 +8,10 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr data-ng-repeat="(idx,account) in physicalAccountList track by account.id"  data-ng-class="account.isInEditMode? 'active-form':'static-form'">
+		<tr data-ng-repeat="(idx,account) in physicalAccountList track by account.id"  >
 			<ng-form name="{{'form_'+idx}}">
-			<td><input type="text" data-ng-model="account.name" required /></td>
-			<td><input type="text" data-ng-model="account.description"/></td>
+			<td><input type="text" data-ng-disabled="!account.isInEditMode" data-ng-model="account.name" required jqm-text-input/></td>
+			<td><input type="text" data-ng-disabled="!account.isInEditMode" data-ng-model="account.description" jqm-text-input/></td>
 			<td>{{account.amount}}</td>
 			<td>
 				<button class="ui-btn ui-shadow ui-corner-all ui-icon-edit ui-btn-icon-notext ui-btn-inline" data-ng-click="account.isInEditMode=!account.isInEditMode" data-ng-show="!account.isInEditMode">修改</button>
@@ -21,9 +21,9 @@
 			</ng-form>
 		</tr>
 		<tr data-ng-form name="newAccountForm" class="active-form">
-			<td><input placeholder="输入账户名" type="text" id="newAccount_name" data-ng-model="newAccount.name" required />
+			<td><input placeholder="输入账户名" type="text" id="newAccount_name" data-ng-model="newAccount.name" required  jqm-text-input/>
 			</td>
-			<td><input placeholder="输入描述信息" type="text" id="newAccount_description" data-ng-model="newAccount.description"/></td>
+			<td><input placeholder="输入描述信息" type="text" id="newAccount_description" data-ng-model="newAccount.description" jqm-text-input/></td>
 			<td></td>
 			<td><button class="ui-btn ui-shadow ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline" data-ng-disabled="newAccountForm.$invalid" data-ng-click="addNewAccount()">添加</button>
 			</td>

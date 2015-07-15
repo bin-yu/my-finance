@@ -57,22 +57,29 @@ function($scope, $log, AccountTransactionService, physicalAccountList, virtualAc
 			this.refreshAllocated();
 		},
 		execute : function() {
+			$("body").addClass('ui-disabled');
+			$.mobile.loading('show');
 			if (this.targetVa && this.virtualAccountList) {
 				var transactionList = [];
 				var now = new Date().toUTCString();
 				for (var i = 0; i < this.virtualAccountList.length; i++) {
-					transactionList.push({
-						date : now,
-						type : 'TRANSFER',
-						fromPhysicalAccountId : this.targetPhysicalAccount.id,
-						fromVirtualAccountId : this.targetVa.virtualAccountId,
-						toPhysicalAccountId : this.targetPhysicalAccount.id,
-						toVirtualAccountId : this.virtualAccountList[i].id,
-						amount : this.virtualAccountList[i].allocated,
-						description : '分赃'
-					});
+					if(this.virtualAccountList[i].allocated>0){
+						transactionList.push({
+							date : now,
+							type : 'TRANSFER',
+							fromPhysicalAccountId : this.targetPhysicalAccount.id,
+							fromVirtualAccountId : this.targetVa.virtualAccountId,
+							toPhysicalAccountId : this.targetPhysicalAccount.id,
+							toVirtualAccountId : this.virtualAccountList[i].id,
+							amount : this.virtualAccountList[i].allocated,
+							description : '分赃'
+						});
+					}
 				}
-				AccountTransactionService.doBatchTransaction(transactionList);
+				AccountTransactionService.doBatchTransaction(transactionList).finally(function(data){
+					$("body").removeClass('ui-disabled');
+					$.mobile.loading('hide');
+				});
 			}
 		}
 	};

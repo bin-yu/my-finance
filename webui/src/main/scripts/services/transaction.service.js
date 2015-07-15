@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('myFinance').factory('AccountTransactionService', ['RestService', 'MemoryCacheService', '$q','$log',
-function(RestService, MemoryCacheService, $q, $log) {
+angular.module('myFinance').factory('AccountTransactionService', ['RestService', 'MemoryCacheService', 'AccountService','$q','$log',
+function(RestService, MemoryCacheService, AccountService, $q, $log) {
 	var KEY_TRANSACTION_LIST = 'TransactionList';
 	return {
 		asyncGetTransactionListOfThisMonth : function() {
@@ -38,22 +38,30 @@ function(RestService, MemoryCacheService, $q, $log) {
 				data : transData
 			}).then(function(data, headers) {
 				thisSrv.flushTransactionListOfThisMonth();
+				AccountService.flushPhysicalAccountList();
+				AccountService.flushVirtualAccountList();
 			}, function(status, errorData) {
 				$log.error('failed to add the record, the reason is : \n' + errorData);
 				alert('failed:status=' + status);
 			});
 		},
 		doBatchTransaction : function(transactionList){
+			var deferred = $q.defer();
 			var thisSrv=this;
 			RestService.doPost('doBatchTransaction', {
 					data : transactionList
 				}).then(function(data, headers) {
-					alert('success');
+					
 					thisSrv.flushTransactionListOfThisMonth();
+					AccountService.flushPhysicalAccountList();
+					AccountService.flushVirtualAccountList();
+					deferred.resolve(data);
 				}, function(status, errorData) {
 					$log.error('failed to submit batch transaction, the reason is : \n' + errorData);
 					alert('failed:status=' + status);
+					deferred.reject(errorData);
 				});
+			return deferred.promise;
 		}
 	};
 }]);
