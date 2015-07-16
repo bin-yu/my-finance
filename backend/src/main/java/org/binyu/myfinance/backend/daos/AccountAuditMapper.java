@@ -34,4 +34,6 @@ public interface AccountAuditMapper
   AccountTransaction getRecord(long id);
 
   List<ExtAccountTransactionRecord> searchRecords(@Param("filter") TransactionSearchFilter filter, RowBounds rowBounds);
+
+  long countRecords(@Param("filter") TransactionSearchFilter filter);
 }

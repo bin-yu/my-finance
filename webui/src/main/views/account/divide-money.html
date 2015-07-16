@@ -12,7 +12,7 @@
 		<label id="unallocated" name="unallocated" >{{allocating.remain()}}</label>
 	</div>
 	<div data-ng-repeat="va in allocating.virtualAccountList">
-		<jslider data-ng-model="va.allocated" id="slider_{{va.id}}" minvar="0" maxvar="allocating.totalUnallocate" label="{{va.name}} : "/>
+		<jqm-slider data-ng-model="va.allocated" id="slider_{{va.id}}" minvar="0" maxvar="allocating.totalUnallocate" label="{{va.name}} : "/>
 	</div>
 	<a href="#/virtual-accounts" data-ng-click="doDivide()" jqm-button>
 		执行

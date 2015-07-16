@@ -72,22 +72,29 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
   private PhysicalAccount toPAccount;
   private VirtualAccount fromVAccount;
   private VirtualAccount toVAccount;
+  private Calendar now;
+  private Calendar oneDayAgo;
+  private Calendar oneMonthAgo;
+  private Calendar olderThanOneMonth;
+  private ExtAccountTransactionRecord transactionNow1;
+  private ExtAccountTransactionRecord transactionOneDayAgo;
+  private ExtAccountTransactionRecord transactionOlderThanOneMonth;
 
   // CONSTRUCTORS ---------------------------------------------------
 
   // PUBLIC METHODS -------------------------------------------------
   @BeforeClass
-  public void prepareBuiltinAccounts() throws SQLException
+  public void prepareCommonTestData() throws SQLException
   {
     fromPAccount = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "from", "dummy");
     toPAccount = AccountTestUtils.insertPhysicalAccount(jdbcTemplate, "to", "dummy");
     fromVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "from", "dummy", 0);
     toVAccount = AccountTestUtils.insertVirtualAccount(jdbcTemplate, "to", "dummy", 0);
-
+    prepareTransactionRecords();
   }
 
   @AfterClass
-  public void cleanBuiltinAccounts()
+  public void cleanUp()
   {
     AccountTestUtils.deletePhysicalAccount(jdbcTemplate, fromPAccount);
     AccountTestUtils.deletePhysicalAccount(jdbcTemplate, toPAccount);
@@ -261,46 +268,48 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
     Assert.assertEquals(retTransList, expTransList);
   }
 
+  @Test(dataProvider = "testGetTransactionCountData")
+  public void testGetTransactionCount(TransactionSearchFilter filter, long expCount)
+      throws Exception
+  {
+    // prepareSearchTransactionData();
+    // do the search
+    MockHttpServletRequestBuilder myReq = get("/account_transactions/count")
+        .accept(MediaType.parseMediaType("application/json;charset=UTF-8"));
+
+    if (filter.getFromDate() != null)
+    {
+      myReq = myReq.param("fromDate", filter.getFromDate().toString());
+    }
+    if (filter.getToDate() != null)
+    {
+      myReq = myReq.param("toDate", filter.getToDate().toString());
+    }
+
+    MvcResult result = this.mockMvc
+        .perform(myReq)
+        .andDo(MockMvcResultHandlers.print())
+        .andExpect(status().isOk())
+        .andReturn();
+    long actualCount = deserialize(result, Long.class);
+    Assert.assertEquals(actualCount, expCount);
+  }
+
   // PROTECTED METHODS ----------------------------------------------
+
+  @DataProvider(name = "testGetTransactionCountData")
+  private Object[][] testGetTransactionCountData()
+  {
+
+    return new Object[][] {
+      { new TransactionSearchFilter(null, null), 3 },
+      { new TransactionSearchFilter(oneMonthAgo.getTime(), null), 2 }
+    };
+  }
 
   @DataProvider(name = "testSearchTransactionsData")
   private Object[][] testSearchTransactionsData()
   {
-    // prepare transaction record in db
-    Calendar now = Calendar.getInstance();
-    Calendar oneDayAgo = Calendar.getInstance();
-    oneDayAgo.add(Calendar.DAY_OF_MONTH, -1);
-    Calendar oneMonthAgo = Calendar.getInstance();
-    oneMonthAgo.add(Calendar.MONTH, -1);
-
-    Calendar olderThanOneMonth = Calendar.getInstance();
-    olderThanOneMonth.add(Calendar.MONTH, -1);
-    olderThanOneMonth.add(Calendar.DAY_OF_MONTH, -1);
-    ExtAccountTransactionRecord transactionNow1 = new ExtAccountTransactionRecord(0, now.getTime(), TransactionType.TRANSFER
-        , fromPAccount.getId(), fromVAccount.getId()
-        , toPAccount.getId(), toVAccount.getId()
-        , 100, "now"
-        , fromPAccount.getName(), fromVAccount.getName()
-        , toPAccount.getName(), toVAccount.getName());
-    auditRepo.addRecord(transactionNow1);
-
-    ExtAccountTransactionRecord transactionOneDayAgo = new ExtAccountTransactionRecord(0, oneDayAgo.getTime(),
-        TransactionType.TRANSFER
-        , fromPAccount.getId(), fromVAccount.getId()
-        , toPAccount.getId(), toVAccount.getId()
-        , 100, "oneDayAgo"
-        , fromPAccount.getName(), fromVAccount.getName()
-        , toPAccount.getName(), toVAccount.getName());
-    auditRepo.addRecord(transactionOneDayAgo);
-
-    ExtAccountTransactionRecord transactionOlderThanOneMonth = new ExtAccountTransactionRecord(0, olderThanOneMonth.getTime(),
-        TransactionType.TRANSFER
-        , fromPAccount.getId(), fromVAccount.getId()
-        , toPAccount.getId(), toVAccount.getId()
-        , 200, "olderThanOneMonth"
-        , fromPAccount.getName(), fromVAccount.getName()
-        , toPAccount.getName(), toVAccount.getName());
-    auditRepo.addRecord(transactionOlderThanOneMonth);
 
     List<ExtAccountTransactionRecord> fullList = new ArrayList<ExtAccountTransactionRecord>(3);
     fullList.add(transactionOlderThanOneMonth);
@@ -387,6 +396,44 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
           , toPAccount.getId(), toVAccount.getId()
           , -100, "desc") }
     };
+  }
+
+  private void prepareTransactionRecords()
+  {
+    now = Calendar.getInstance();
+    oneDayAgo = Calendar.getInstance();
+    oneDayAgo.add(Calendar.DAY_OF_MONTH, -1);
+    oneMonthAgo = Calendar.getInstance();
+    oneMonthAgo.add(Calendar.MONTH, -1);
+
+    olderThanOneMonth = Calendar.getInstance();
+    olderThanOneMonth.add(Calendar.MONTH, -1);
+    olderThanOneMonth.add(Calendar.DAY_OF_MONTH, -1);
+    transactionNow1 = new ExtAccountTransactionRecord(0, now.getTime(), TransactionType.TRANSFER
+        , fromPAccount.getId(), fromVAccount.getId()
+        , toPAccount.getId(), toVAccount.getId()
+        , 100, "now"
+        , fromPAccount.getName(), fromVAccount.getName()
+        , toPAccount.getName(), toVAccount.getName());
+    auditRepo.addRecord(transactionNow1);
+
+    transactionOneDayAgo = new ExtAccountTransactionRecord(0, oneDayAgo.getTime(),
+        TransactionType.TRANSFER
+        , fromPAccount.getId(), fromVAccount.getId()
+        , toPAccount.getId(), toVAccount.getId()
+        , 100, "oneDayAgo"
+        , fromPAccount.getName(), fromVAccount.getName()
+        , toPAccount.getName(), toVAccount.getName());
+    auditRepo.addRecord(transactionOneDayAgo);
+
+    transactionOlderThanOneMonth = new ExtAccountTransactionRecord(0, olderThanOneMonth.getTime(),
+        TransactionType.TRANSFER
+        , fromPAccount.getId(), fromVAccount.getId()
+        , toPAccount.getId(), toVAccount.getId()
+        , 200, "olderThanOneMonth"
+        , fromPAccount.getName(), fromVAccount.getName()
+        , toPAccount.getName(), toVAccount.getName());
+    auditRepo.addRecord(transactionOlderThanOneMonth);
   }
   // ACCESSOR METHODS -----------------------------------------------
 

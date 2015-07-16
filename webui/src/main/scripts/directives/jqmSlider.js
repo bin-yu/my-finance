@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myFinance').directive('jslider', ['$compile', '$http', '$templateCache',
+angular.module('myFinance').directive('jqmSlider', ['$compile', '$http', '$templateCache',
 function($compile, $http, $templateCache, $interpolate) {
 	return {
 		restrict : 'E',
@@ -68,36 +68,4 @@ function($compile, $http, $templateCache, $interpolate) {
 		}
 	};
 }]);
-
-angular.module('myFinance').directive('select', function() {
-	return {
-		restrict : 'E',
-		priority : 1,
-		require : '?ngModel',
-		link : function(scope, element, attrs, ngModel) {
-			if (ngModel) {
-				var ngModelCtrl = ngModel;
-				var defaultFn = ngModel.$render;
-				ngModel.$render = function() {
-					if (defaultFn)
-						defaultFn();
-					element.attr('value', ngModelCtrl.$viewValue);
-					element.selectmenu('refresh');
-				};
-			}
-			element.selectmenu();
-			/*
-			 var unbindInitializationWatch = scope.$watch(attrs.ngModel, function(newValue, oldValue) {
-			 if (newValue=== undefined && oldValue === undefined) {
-			 element.selectmenu();
-			 //unbindInitializationWatch();
-			 } else {
-			 element.selectmenu('refresh');
-			 //unbindInitializationWatch();
-			 }
-			 });*/
-
-		}
-	};
-});
 

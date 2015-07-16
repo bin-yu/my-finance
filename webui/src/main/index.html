@@ -8,6 +8,7 @@
 		<!-- build:css styles/vendor.css -->
 		<!-- bower:css -->
 		<link rel="stylesheet" href="../../bower_components/jquery-mobile-bower/css/jquery.mobile-1.4.5.css" />
+		<link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" />
 		<!-- endbower -->
 		<!-- endbuild -->
 		<!-- build:css styles/app.css -->
@@ -28,16 +29,6 @@
 			</div><!-- /header -->
 			<div role="main" class="ui-content" >
 				<div class="scrollable-content slide-animate" ng-view></div>
-				<!--
-				<div class="modal" ng-show="loadingView">
-									<ul id="loading">
-										<li class="bar" ng-repeat="i in [0,1,2,3,4,5,6,7,8,9]"></li>
-									</ul>
-								</div>-->
-				
-				
-			<div class="loading" data-ng-show="loadingView">
-				</div>
 			</div>
 			<!-- /content -->
 			<div data-role="footer" data-position="fixed" >
@@ -78,6 +69,7 @@
 		<script src="../../bower_components/angular/angular.js"></script>
 		<script src="../../bower_components/angular-route/angular-route.js"></script>
 		<script src="../../bower_components/angular-animate/angular-animate.js"></script>
+		<script src="../../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 		<!-- endbower -->
 		<!-- endbuild -->
 		<!-- build:js scripts/scripts.js -->
@@ -92,9 +84,10 @@
 		<script src="scripts/services/transaction.service.js"></script>
 
 		<script src="scripts/directives/field.js"></script>
-		<script src="scripts/directives/jslider.js"></script>
 		<script src="scripts/directives/jqmTextInput.js"></script>
 		<script src="scripts/directives/jqmButton.js"></script>
+		<script src="scripts/directives/jqmSlider.js"></script>
+		<script src="scripts/directives/jqmSelect.js"></script>
 
 		<script src="scripts/controllers/homeCtrl.js"></script>
 		<script src="scripts/controllers/addRecordCtrl.js"></script>

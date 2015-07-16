@@ -44,6 +44,18 @@
 			DESC
 		</if>
 	</select>
+	
+	<select id="countRecords" resultType="long">
+		select count(aa.id)
+		from account_audits aa
+		where 1=1
+		<if test="filter.fromDate != null">
+			AND date >= #{filter.fromDate}
+		</if>
+		<if test="filter.toDate != null">
+			AND date &lt; #{filter.toDate}
+		</if>
+	</select>
 	<resultMap id="AccountTransactionMapper"
 		type="org.binyu.myfinance.backend.dtos.AccountTransaction">
 		<id property="id" column="id" />

@@ -114,6 +114,11 @@ public class AccountTransactionMgrService
     return auditRepo.searchRecords(filter, new RowBounds(filter.getOffset(), filter.getLimit()));
   }
 
+  public long countAudits(TransactionSearchFilter filter)
+  {
+    return auditRepo.countRecords(filter);
+  }
+
   @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Throwable.class)
   public AccountTransaction[] newTransactions(AccountTransaction[] transactionsToDo) throws InvalidInputException
   {

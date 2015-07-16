@@ -81,6 +81,10 @@
 	position: fixed;
 }
 /* for page body */
+.ui-page {
+	height : 100%;
+	width : 100%;
+}
 .ui-panel-wrapper {
 	position: absolute;
 }
@@ -98,6 +102,7 @@
 		left: 0;
 		float: left;
 		width: 15%;
+		height : 100%;
 		-webkit-transition: none !important;
 		-moz-transition: none !important;
 		transition: none !important;

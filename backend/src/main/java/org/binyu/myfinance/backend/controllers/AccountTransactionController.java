@@ -65,6 +65,12 @@ public class AccountTransactionController
     return service.searchAudits(filter);
   }
 
+  @RequestMapping(value = "/count", method = RequestMethod.GET)
+  public long getTransactionCount(TransactionSearchFilter filter) throws InvalidInputException
+  {
+    return service.countAudits(filter);
+  }
+
   // PROTECTED METHODS ----------------------------------------------
 
   // PRIVATE METHODS ------------------------------------------------

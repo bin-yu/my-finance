@@ -1,6 +1,6 @@
 <div >
 	<label for="add-record"></label>
-	<a href="#/add-record" data-role="button" data-icon="plus" data-iconpos="right" name="add-record" id="add-record" >添加记录</a>
+	<a href="#/add-record" data-role="button" data-icon="plus" data-iconpos="right" name="add-record" id="add-record" jqm-button>添加记录</a>
 </div>
 <table class="account-table">
 	<thead class="seperator">
@@ -21,6 +21,6 @@
 			<td>{{trans.getFromAccount()}}</td>
 			<td>{{trans.getToAccount()}}</td>
 		</tr>
-
 	</tbody>
 </table>
+<pagination direction-links="false" boundary-links="true" total-items="totalRecords" items-per-page="10" ng-model="currentPage" ng-change="pageChanged()"></pagination>

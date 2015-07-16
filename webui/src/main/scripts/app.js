@@ -10,7 +10,7 @@ var closeLeftBar = function (){
 $('#leftbar,a').click(closeLeftBar);
 
 //Below is the definition of the main module 
-var myApp = angular.module('myFinance', ['ngRoute','ngAnimate',/*'mobile-angular-ui'*/]);
+var myApp = angular.module('myFinance', ['ngRoute','ngAnimate','ui.bootstrap']);
 
 myApp.config(['$routeProvider',
 function($routeProvider) {
@@ -24,8 +24,8 @@ function($routeProvider) {
 		templateUrl : 'views/record/month-records.html',
 		controller : 'MonthRecordCtrl',
 		resolve : {
-			transactionsOfThisMonth : function(AccountTransactionService){
-				return AccountTransactionService.getTransactionListOfThisMonth();
+			transactionCountOfThisMonth : function(AccountTransactionService){
+				return AccountTransactionService.getTransactionCountOfThisMonth();
 			}
 		}
 	}).when('/add-record', {
@@ -40,8 +40,7 @@ function($routeProvider) {
 			}
 		}
 	}).when('/search-records', {
-		templateUrl : 'views/record/search-records.html',
-		controller : 'AddRecordCtrl'
+		templateUrl : 'views/record/search-records.html'
 	}).when('/manage-accounts', {
 		templateUrl : 'views/account/manage-accounts.html',
 		//controller : 'AddRecordCtrl'
@@ -97,30 +96,20 @@ myApp.constant('HostConfig', {
 	virtualAccounts : '/virtual_accounts',
 	virtualAccount : '/virtual_accounts/{id}',
 	transactions : '/account_transactions',
+	countTransactions : '/account_transactions/count',
 	doBatchTransaction : '/account_transactions/batch'
 });
 
-//use this directive to allow jquery mobile to render subviews
-myApp.directive('jqm', function($timeout) {
-  return {
-    link : function postLink(scope, element, attrs){
-        $timeout(function(){
-            element.trigger('create');
-        });
-    }
-  };
-});
 
-//define loading page
+//define loading page during route change
 myApp.run(['$rootScope', function($root) {
-  $root.$on('$routeChangeStart', function(e, curr, prev) { 
-    if (curr.$$route && curr.$$route.resolve) {
-      // Show a loading icon until promises aren't resolved
-      $root.loadingView = true;
-    }
+  $root.$on('$routeChangeStart', function(e, curr, prev) {
+		$("body").addClass('ui-disabled');
+		$.mobile.loading('show');
   });
   $root.$on('$routeChangeSuccess', function(e, curr, prev) { 
-    // Hide loading icon
-    $root.loadingView = false;
+	    // Hide loading icon
+		$("body").removeClass('ui-disabled');
+		$.mobile.loading('hide');
   });
 }]);
