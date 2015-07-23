@@ -38,4 +38,15 @@ function($scope, $log, AccountTransactionService, physicalAccountList, virtualAc
 	if ($scope.virtualAccountList.length > 0) {
 		$scope.trans.fromVirtualAccount = $scope.trans.toVirtualAccount = $scope.virtualAccountList[0];
 	}
+	
+	//for date picker
+	$scope.dateOptions = {
+		formatYear : 'yyyy',
+		startingDay : 1
+	};
+	$scope.open = function($event) {
+		$event.preventDefault();
+		$event.stopPropagation();
+		$scope.trans.pickerOpened = true;
+	};
 }]);

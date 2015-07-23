@@ -1,1 +1,52 @@
-<pagination total-items="100" items-per-page="10" ng-model="currentPage" ng-change="pageChanged()"></pagination>
+<div class="row">
+	<div class="col-md-4">
+		<p class="input-group">
+			<input type="text" class="form-control" datepicker-popup="{{'yyyy-MM-dd'}}" data-ng-model="from.date" is-open="from.opened"  max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-default" ng-click="open($event,from)">
+					<i class="glyphicon glyphicon-calendar"></i>
+				</button> </span>
+
+		</p>
+	</div>
+	<div class="col-md-4">
+		<p class="input-group">
+			<input type="text" class="form-control" datepicker-popup="{{'yyyy-MM-dd'}}" data-ng-model="to.date" is-open="to.opened"  max-date="maxDate" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-default" ng-click="open($event,to)">
+					<i class="glyphicon glyphicon-calendar"></i>
+				</button> </span>
+
+		</p>
+	</div>
+	<div class="col-md-4">
+	<a data-ng-click="search()" jqm-button>
+		搜索
+	</a>
+	</div>
+</div>
+
+<table class="account-table">
+	<thead class="seperator">
+		<tr class="seperator">
+			<th width="70px">日期</th>
+			<th width="50px">类型</th>
+			<th width="80px">金额（元）</th>
+			<th>源账户</th>
+			<th>目标账户</th>
+		</tr>
+	</thead>
+	<tbody>
+
+		<tr data-ng-repeat="trans in transList track by trans.id"  class="static-form">
+			<td>{{trans.getDateStr()}}</td>
+			<td>{{trans.getTypeStr()}}</td>
+			<td>{{trans.amount}}</td>
+			<td>{{trans.getFromAccount()}}</td>
+			<td>{{trans.getToAccount()}}</td>
+		</tr>
+	</tbody>
+</table>
+<pagination direction-links="false" boundary-links="true" total-items="totalRecords" items-per-page="10" ng-model="currentPage" ng-change="pageChanged()"></pagination>

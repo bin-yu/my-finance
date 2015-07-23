@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.binyu.myfinance.backend.daos.ReportsMapper">
+	<select id="getVAUsageSummary" resultMap="VirtualAccountUsageSummaryMapper">
+		select va.id as id, va.name as name, va.budget as budget, sum(aa.amount) as expense
+		from virtual_accounts va
+		left outer join account_audits aa on va.id=aa.from_virtual_account_id
+		where
+		va.id>=0
+		AND
+		aa.id is null
+		OR
+		( 
+			aa.type = 2
+			<if test="filter.fromDate != null">
+				AND aa.date >= #{filter.fromDate}
+			</if>
+			<if test="filter.toDate != null">
+				AND aa.date &lt; #{filter.toDate}
+			</if>
+		)
+		group by va.id,va.name,va.budget
+		order by va.id
+	</select>
+	
+	<resultMap id="VirtualAccountUsageSummaryMapper" type="org.binyu.myfinance.backend.dtos.VirtualAccountUsageSummary">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="description" column="description" />
+		<result property="budget" column="budget" />
+		<result property="expense" column="expense" />
+	</resultMap>
+</mapper>

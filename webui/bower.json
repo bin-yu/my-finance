@@ -18,6 +18,9 @@
     "angular-animate": "~1.4.1",
     "jquery-mobile-bower": "~1.4.5",
     "angular-bootstrap": "~0.13.0",
-    "bootstrap":"3.1.1"
+    "bootstrap": "3.1.1",
+    "d3": "~3.5.6",
+    "nvd3": "~1.8.1",
+    "angularjs-nvd3-directives": "~0.0.7"
   }
 }

@@ -1,7 +1,18 @@
 <div>
 	<div>
+		
+		<!--<input type="date" id="select-record-date" data-ng-model="trans.date" jqm-text-input/>-->
 		<label for="select-record-date">日期:</label>
-		<input type="date" id="select-record-date" data-ng-model="trans.date" jqm-text-input/>
+		<p class="input-group">
+			<input type="text" id="select-record-date" class="form-control" datepicker-popup="{{'yyyy-MM-dd'}}" data-ng-model="trans.date" is-open="trans.pickerOpened"  datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-default" ng-click="open($event)">
+					<i class="glyphicon glyphicon-calendar"></i>
+				</button> </span>
+
+		</p>
+		
 		<label for="select-record-type">类型:</label>
 		<select name="select-record-type" id="select-record-type" data-ng-model="trans.type">
 			<option value="INCOME">收入</option>

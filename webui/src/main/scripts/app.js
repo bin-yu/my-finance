@@ -10,13 +10,24 @@ var closeLeftBar = function (){
 $('#leftbar,a').click(closeLeftBar);
 
 //Below is the definition of the main module 
-var myApp = angular.module('myFinance', ['ngRoute','ngAnimate','ui.bootstrap']);
+var myApp = angular.module('myFinance', ['ngRoute','ngAnimate','ui.bootstrap','nvd3ChartDirectives']);
 
 myApp.config(['$routeProvider',
 function($routeProvider) {
 	$routeProvider.when('/', {
 		templateUrl : 'views/home-view.html',
-		controller : 'HomeCtrl'
+		controller : 'HomeCtrl',
+		resolve : {
+			physicalAccountList : function(AccountService){
+				return AccountService.getPhysicalAccountList();
+			},
+			virtualAccountList : function(AccountService){
+				return AccountService.getVirtualAccountList();
+			},
+			monthlyUsageSummary : function(ReportsService){
+				return ReportsService.getMonthlyUsageSummary();
+			}
+		}
 	}).when('/manage-records', {
 		templateUrl : 'views/record/manage-records.html',
 		//controller : 'AddRecordCtrl'
@@ -40,7 +51,8 @@ function($routeProvider) {
 			}
 		}
 	}).when('/search-records', {
-		templateUrl : 'views/record/search-records.html'
+		templateUrl : 'views/record/search-records.html',
+		controller : 'SearchRecordsCtrl'
 	}).when('/manage-accounts', {
 		templateUrl : 'views/account/manage-accounts.html',
 		//controller : 'AddRecordCtrl'
@@ -72,14 +84,18 @@ function($routeProvider) {
 			}
 		}
 	}).when('/manage-reports', {
-		templateUrl : 'views/report/manage-reports.html',
-		controller : 'AddRecordCtrl'
+		templateUrl : 'views/report/manage-reports.html'
 	}).when('/month-reports', {
 		templateUrl : 'views/report/month-reports.html',
-		//controller : 'AddRecordCtrl'
+		controller : 'MonthReportsCtrl',
+		resolve : {
+			monthlyUsageSummary : function(ReportsService){
+				return ReportsService.getMonthlyUsageSummary();
+			}
+		}
 	}).when('/history-reports', {
 		templateUrl : 'views/report/history-reports.html',
-		//controller : 'AddRecordCtrl'
+		controller : 'HistoryReportsCtrl'
 	}).otherwise({
 		redirectTo : '/'
 	});
@@ -97,7 +113,8 @@ myApp.constant('HostConfig', {
 	virtualAccount : '/virtual_accounts/{id}',
 	transactions : '/account_transactions',
 	countTransactions : '/account_transactions/count',
-	doBatchTransaction : '/account_transactions/batch'
+	doBatchTransaction : '/account_transactions/batch',
+	monthlyUsageSummary : '/reports/monthlyUsageSummary'
 });
 
 
