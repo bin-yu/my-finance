@@ -27,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.binyu.myfinance.backend.AbstractIntegrationTest;
-import org.binyu.myfinance.backend.RootConfiguration;
 import org.binyu.myfinance.backend.daos.AccountAuditMapper;
 import org.binyu.myfinance.backend.daos.AccountStoreMapper;
 import org.binyu.myfinance.backend.dtos.AccountStore;
@@ -40,7 +39,6 @@ import org.binyu.myfinance.backend.dtos.TransactionSearchFilter.SortOrder;
 import org.binyu.myfinance.backend.dtos.VirtualAccount;
 import org.binyu.myfinance.backend.utils.AccountTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -55,7 +53,6 @@ import org.testng.annotations.Test;
  * TODO: Update with a detailed description of the interface/class.
  * 
  */
-@SpringApplicationConfiguration(classes = { RootConfiguration.class, AccountTransactionControllerTest.class })
 public class AccountTransactionControllerTest extends AbstractIntegrationTest
 {
   // CONSTANTS ------------------------------------------------------
@@ -249,11 +246,11 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
 
     if (filter.getFromDate() != null)
     {
-      myReq = myReq.param("fromDate", filter.getFromDate().toString());
+      myReq = myReq.param("fromDate", String.valueOf(filter.getFromDate().getTime()));
     }
     if (filter.getToDate() != null)
     {
-      myReq = myReq.param("toDate", filter.getToDate().toString());
+      myReq = myReq.param("toDate", String.valueOf(filter.getToDate().getTime()));
     }
 
     MvcResult result = this.mockMvc
@@ -279,11 +276,11 @@ public class AccountTransactionControllerTest extends AbstractIntegrationTest
 
     if (filter.getFromDate() != null)
     {
-      myReq = myReq.param("fromDate", filter.getFromDate().toString());
+      myReq = myReq.param("fromDate", String.valueOf(filter.getFromDate().getTime()));
     }
     if (filter.getToDate() != null)
     {
-      myReq = myReq.param("toDate", filter.getToDate().toString());
+      myReq = myReq.param("toDate", String.valueOf(filter.getToDate().getTime()));
     }
 
     MvcResult result = this.mockMvc

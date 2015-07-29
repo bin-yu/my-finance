@@ -75,7 +75,7 @@
 								url  : url,
 								data : _config.data,
 								headers : headers,
-								withCredentials : true,
+								withCredentials : false,
 								params : _config.requestParameters,
 								ignoreAuthModule : _config.ignoreAuthModule
 							}

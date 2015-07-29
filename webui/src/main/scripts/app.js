@@ -101,7 +101,7 @@ function($routeProvider) {
 	});
 }]); 
 myApp.constant('HostConfig', {
-	isCors : true,
+	isCors : false,
 	protocol : 'http',
 	host : 'localhost',
 	port : 8080,

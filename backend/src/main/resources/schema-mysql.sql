@@ -34,5 +34,5 @@ CREATE TABLE `account_audits` (
 `to_virtual_account_id`  bigint NULL,
 `amount` bigint NOT NULL,
 `description`   varchar(255) NULL,
-PRIMARY KEY (`id`),
+PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

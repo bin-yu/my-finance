@@ -85,14 +85,14 @@ public class RootConfiguration
       private void allowAjaxCros(HttpServletResponse response)
       {
         response.setHeader("Access-Control-Allow-Origin",
-            "http://localhost:9001");
+            "*");
         response.setHeader("Access-Control-Expose-Headers",
             "X-CSRF-TOKEN");
         response.setHeader("Access-Control-Allow-Methods",
             "GET, POST, OPTIONS, PUT, DELETE");
         response.setHeader("Access-Control-Allow-Headers",
             "Content-Type, Authorization, Accept, X-Requested-With, X-CSRF-TOKEN");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Credentials", "false");
         response.setHeader("Access-Control-Max-Age", "3600");
       }
 
